@@ -1,0 +1,59 @@
+package com.obsidian.knightsmp.items;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+public class BootItem extends ItemManager{
+
+
+    public static ShapedRecipe sr;
+    public static void createBoots(){
+        ItemStack item = new ItemStack(Material.NETHERITE_BOOTS);
+        ItemMeta meta = item.getItemMeta();
+        meta.setCustomModelData(1895);
+        meta.setDisplayName("§5The §9Knights Boots§5");
+
+        List lore = new ArrayList();
+        lore.add(ChatColor.MAGIC+"Fight For The Truth");
+        lore.add(ChatColor.MAGIC+ "Just like the Knights");
+        lore.add(ChatColor.MAGIC+ "In the Days of Old");
+        meta.setLore(lore);
+        meta.addEnchant(Enchantment.DURABILITY, 1000, true);
+        meta.addEnchant(Enchantment.WATER_WORKER, 1, true);
+        meta.addEnchant(Enchantment.LUCK, 1, true);
+        meta.addEnchant(Enchantment.DEPTH_STRIDER, 1, true);
+        meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
+        meta.addEnchant(Enchantment.PROTECTION_FIRE, 5, true);
+        meta.addEnchant(Enchantment.PROTECTION_FALL, 5, true);
+        meta.addEnchant(Enchantment.PROTECTION_PROJECTILE, 5, true);
+        meta.addEnchant(Enchantment.THORNS, 1, true);
+        meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
+        meta.setUnbreakable(true);
+        item.setItemMeta(meta);
+
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        boots = item;
+        ShapedRecipe sr = new ShapedRecipe(new NamespacedKey("knightsmp", "boots"),item);
+        sr.shape("DDD","GNG","BSB");
+        sr.setIngredient('D',Material.DIAMOND);
+        sr.setIngredient('G',Material.GOLDEN_APPLE);
+        sr.setIngredient('S', Material.NETHER_STAR);
+        sr.setIngredient('B', Material.BLAZE_POWDER);
+        sr.setIngredient('N', Material.NETHERITE_BOOTS);
+        Bukkit.getServer().addRecipe(sr);
+    }
+
+    public static ShapedRecipe getRecipe(){
+        return sr;
+    }
+}

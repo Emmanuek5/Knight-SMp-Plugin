@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="CrazyAdvancementsAPI (1)">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Dependencies/CrazyAdvancementsAPI (1).jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../Dependencies/CrazyAdvancementsAPI (1).jar!/" />
+    </SOURCES>
+  </library>
+</component>

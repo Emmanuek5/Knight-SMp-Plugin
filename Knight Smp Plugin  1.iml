@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="minecraft" name="Minecraft">
+      <configuration>
+        <autoDetectTypes>
+          <platformType>SPIGOT</platformType>
+        </autoDetectTypes>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="spigot-api-1.20.1-R0.1-20230810.090724-51" level="project" />
+    <orderEntry type="library" name="lssmp-2.3.21" level="project" />
+    <orderEntry type="library" name="CrazyAdvancementsAPI (1)" level="project" />
+    <orderEntry type="library" name="spigot-api-1.20.1-R0.1-SNAPSHOT-shaded" level="project" />
+    <orderEntry type="library" name="UltimateAdvancementAPI-2.2.5-(1.15-1.20.1)" level="project" />
+    <orderEntry type="library" name="spigot-api-1.9.4-R0.1-20160531.105800-24" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/24.0.0/annotations-24.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="EssentialsX-2.20.1-dev+37-b2ae28b" level="project" />
+  </component>
+</module>

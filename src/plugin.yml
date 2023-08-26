@@ -1,0 +1,100 @@
+name: Knight_Plugin
+version: 1.0.1
+description: A plugin for KnightsMP
+main: com.obsidian.knightsmp.KnightSmp
+author: Blue Obsidian
+website: https://theknightsmp.carrd.co/
+github: https://github.com/Emmanuek5/
+api-version: 1.19
+softdepend: [UltimateAdvancementAPI,Essentials]
+resources:
+  playerdata.yml: true
+permissions:
+  feed:
+    description: Feed a player
+    default: op
+  heal:
+    description: Heals a player
+    default: op
+  select:
+    description: Opens the selection screen
+    default: op
+  giveitem:
+    description: Give a custom item to a player
+    default: op
+  farmtime:
+    description: Farm Mobs
+    default: op
+  player:
+    description: Get a player's data
+    default: op
+    children:
+      info:
+        description: Get a player's info
+        default: op
+      reset-captcha:
+       description: Captcha
+       default: op
+  ddroppeditems:
+    description: See the items that where dropped on the ground
+    default: true
+  password:
+    description: Password
+    default: true
+commands:
+  heal:
+    description: Heals a player to max health
+    usage: /<command> [player]
+    permission: knightsmp.heal
+    aliases:
+      - hm
+      - healme
+  feed:
+    description: Feed a player
+    usage: /<command> [player]
+    permission: knightsmp.feed
+    aliases:
+      - feedme
+      - fm
+  farmtime:
+    description: Farm Mobs
+    usage: /<command> [mob] [amount]
+    permission: knightsmp.farmtime
+    aliases:
+      - farmmob
+  giveitem:
+    description: Give a custom item to a player
+    usage: /<command> [item] [player]
+    permission: knightsmp.giveitem
+    aliases:
+      - giveitem
+      - gi
+  select:
+    description: Opens the selection screen
+    usage: /<command>
+    permission: knightsmp.select
+    aliases:
+      - select
+      - sl
+  player:
+    description: Get a player's data
+    usage: /<command> [info] [player]
+    permission: knightsmp.player
+    aliases:
+      - player
+      - pl
+      - player
+  captcha:
+    description: Captcha
+    usage: /<command> [captcha]
+  password:
+    description: Password
+    usage: /<command> [password]
+    permission: knightsmp.password
+  droppeditems:
+    description: Dropped Items
+    usage: /<command>
+    permission: knightsmp.droppeditems
+    aliases:
+      - dippeditems
+      - di
