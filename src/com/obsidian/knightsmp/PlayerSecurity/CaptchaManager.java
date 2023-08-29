@@ -39,7 +39,7 @@ public class CaptchaManager {
         }
     }
     public static boolean hasCaptcha(Player player) {
-       if (playerDataManager.getCaptcha(player) != null && !playerDataManager.getCaptcha(player).equals("")) {
+       if (playerDataManager.getCaptcha(player) != null && !playerDataManager.getCaptcha(player).equals("") || playerDataManager.getCaptcha(player) != null && !playerDataManager.getCaptcha(player).equals("null") || playerDataManager.getCaptcha(player) != null && !playerDataManager.getCaptcha(player).isEmpty()) {
            return true;
        }
         return false;

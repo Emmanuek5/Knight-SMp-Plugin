@@ -60,7 +60,7 @@ public class PlayerEvents implements Listener {
         } else {
           if (LoginManager.isSuspiciousLogin(player.getName())){
               event.setJoinMessage(ChatColor.RED + player.getName() + ", Welcome back to the Knights SMP!");
-              player.sendMessage(ChatColor.RED + "Your IP has been changed, Run /captcha verify <captcha> to secure your account");
+              player.sendMessage(ChatColor.RED + "Your IP has been changed, Run /login <password> to secure your account");
           }else {
               event.setJoinMessage(ChatColor.GREEN + player.getName() + ", Welcome back to the Knights SMP!");
           }
@@ -85,12 +85,12 @@ public class PlayerEvents implements Listener {
             if (!captchaManager.hasCaptcha(player)) {
 
                 event.setFormat(ChatColor.DARK_RED + "[Unverified] "+ playerNameColor.getChar() + player.getName() + ChatColor.GREEN + " >>> " + ChatColor.WHITE + message);
-                player.sendMessage(ChatColor.GOLD + "To verify your account, run /password set <password>");
+                player.sendMessage(ChatColor.GOLD + "To verify your account, run /register <password> <password>");
             }
         }
         if (LoginManager.isSuspiciousLogin(player.getName())) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "Your IP has been changed. Run /password verify <password> to secure your account.");
+            player.sendMessage(ChatColor.RED + "Your IP has been changed. Run /login <password> to secure your account.");
         }
     }
 
@@ -102,8 +102,8 @@ public class PlayerEvents implements Listener {
         String command = event.getMessage().substring(1); // Removing the "/" at the beginning
 
         if (LoginManager.isSuspiciousLogin(player.getName())) {
-            if (!command.startsWith("password")) {
-                player.sendMessage("Your IP has been changed. Run /password verify <password> to login to your account.");
+            if (!command.startsWith("login")) {
+                player.sendMessage("Your IP has been changed. Run /login <password> to login to your account.");
                 event.setCancelled(true);
             }
         }
@@ -130,7 +130,7 @@ public class PlayerEvents implements Listener {
             player.sendMessage(ChatColor.LIGHT_PURPLE + "Your current class is: " + playerDataManager.getPlayerClass(player));
             player.sendMessage(ChatColor.LIGHT_PURPLE + "To Upgrade your class, fill up your power slots");
             player.sendMessage(ChatColor.LIGHT_PURPLE + "Get Power Items from the Fragrents");
-            player.sendMessage(ChatColor.YELLOW+"Do /password set <password> to secure your account from other players");
+            player.sendMessage(ChatColor.YELLOW+"Do /register <password> <password> to secure your account from other players");
             player.resetTitle();
             player.getInventory().addItem(ItemManager.book);
             // List of available powers
@@ -168,7 +168,7 @@ public class PlayerEvents implements Listener {
             }
             if (!captchaManager.hasCaptcha(player)){
                 player.sendMessage(ChatColor.RED + "Your account is not secured");
-                player.sendMessage(ChatColor.RED+"Run /password set <password> to secure your account");
+                player.sendMessage(ChatColor.RED+"Run  /register <password> <password> to secure your account");
             }
             if (LoginManager.isSuspiciousLogin(player.getName())){
                 KnightSmp.getPlugin().getServer().getConsoleSender().sendMessage("SUSPICIOUS LOGIN DETECTED BY : " + player.getName());

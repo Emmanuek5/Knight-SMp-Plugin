@@ -32,5 +32,10 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="EssentialsX-2.20.1-dev+37-b2ae28b" level="project" />
+    <orderEntry type="library" name="jsch-0.1.55" level="project" />
+    <orderEntry type="library" name="commons-net-3.9.0" level="project" />
+    <orderEntry type="library" name="sshj-0.35.0" level="project" />
+    <orderEntry type="library" name="eddsa-0.3.0-sources" level="project" />
+    <orderEntry type="library" name="commons-vfs2-2.9.0" level="project" />
   </component>
 </module>

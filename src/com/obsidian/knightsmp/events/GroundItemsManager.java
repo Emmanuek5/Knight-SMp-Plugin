@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +24,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GroundItemsManager implements Listener {
 
@@ -34,22 +34,29 @@ public class GroundItemsManager implements Listener {
 
     public GroundItemsManager() {
         this.fileManager = KnightSmp.fileManager;
-        loadItemsFromFile();
     }
 
     public List<ItemStack> getItemsOnGround() {
-        List<ItemStack> combinedItems = new ArrayList<>();
-        combinedItems.addAll(itemsOnGround);
-        KnightSmp.getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "Loaded " + combinedItems.size() + " items from cache, "+ combinedItems);
+        KnightSmp.getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "Loaded " +itemsOnGround.size() + " items from cache, "+ itemsOnGround);
         // Add items from actual items on the ground
         for (Item itemEntity : Bukkit.getWorlds().get(0).getEntitiesByClass(Item.class)) {
-            combinedItems.add(itemEntity.getItemStack());
+          itemsOnGround.add(itemEntity.getItemStack());
         }
-        return combinedItems;
-
+        return itemsOnGround;
     }
     public void removeItemFromGround(ItemStack itemToRemove) {
+        KnightSmp.sendMessage(itemsOnGround.toString());
         itemsOnGround.removeIf(item -> item.isSimilar(itemToRemove));
+        KnightSmp.sendMessage(itemsOnGround.toString());
+        saveItemsToFile(itemsOnGround, fileManager.getFile(itemCacheFolder + "/items.yml"));
+    }
+    public boolean isGroundItem(ItemStack item) {
+        for (ItemStack groundItem : itemsOnGround) {
+            if (groundItem.isSimilar(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -80,6 +87,7 @@ public class GroundItemsManager implements Listener {
             itemMap.put("enchantments", enchantmentsMap);
 
             itemsList.add(itemMap);
+            KnightSmp.sendMessage(itemsList.toString());
         }
 
         try (FileWriter writer = new FileWriter(outputFile)) {
@@ -132,27 +140,25 @@ public class GroundItemsManager implements Listener {
     @EventHandler
     public void onPluginDisabled(PluginDisableEvent event) {
         if (event.getPlugin().getName().equals("Knight_Plugin")) {
-            getItemsOnGround();
             saveItemsToCache();
         }
     }
 
 
-    @EventHandler
-    public void InventoryClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
+
+
+
+   @EventHandler
+   public void inventoryClickEvent(InventoryClickEvent event){
+        Player player = (Player ) event.getWhoClicked();
         Inventory inventory = event.getInventory();
-        if (inventory.getHolder() instanceof DisplayGui) {
-            ItemStack clickedItem = event.getCurrentItem();
-            if (clickedItem != null) {
-                event.setCancelled(true);
-                // Check if the clicked item exists in itemsOnGround
-                if (itemsOnGround.contains(clickedItem)) {
-                    itemsOnGround.remove(clickedItem);
+        if (inventory.getHolder() instanceof DisplayGui){
+            ItemStack item = event.getCurrentItem();
+                if (isGroundItem(item)) {
+                    removeItemFromGround(item);
                 }
-            }
         }
-    }
+   }
     // Helper method to check if an array contains an ItemStack
     private boolean containsItem(ItemStack[] array, ItemStack target) {
         for (ItemStack item : array) {

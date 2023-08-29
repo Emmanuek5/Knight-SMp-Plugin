@@ -43,9 +43,9 @@ public class LoginManager implements Listener {
                 isPlayerSuspiciousMap.put(player.getName(), true);
                 player.sendMessage(ChatColor.RED + "Your IP has been changed!");
                 player.sendMessage(ChatColor.RED + "We've detected a suspicious login attempt!");
-                player.sendMessage(ChatColor.RED + "Run /password verify <password> to login again");
+                player.sendMessage(ChatColor.RED + "Run /login <password> to login again");
             } else {
-                player.sendMessage("Run Command /password set <password> to secure your account");
+                player.sendMessage("Run Command /register <password> <verify-password> to secure your account");
             }
         }
     }
@@ -56,8 +56,13 @@ public class LoginManager implements Listener {
         if (isSuspiciousLogin(player.getName()) ) {
            player.sendMessage(ChatColor.RED+"=============================================");
            player.sendMessage(ChatColor.RED+"We've detected a suspicious login attempt!");
-           player.sendMessage(ChatColor.RED+"Run /password verify <password> to login again");
+           player.sendMessage(ChatColor.RED+"Run /login <password> to login again");
            event.setCancelled(true);
+        }else if (!CaptchaManager.hasCaptcha(player)) {
+            player.sendMessage(ChatColor.RED+"=============================================");
+            player.sendMessage(ChatColor.RED+"You must run /register <password> <verify-password> to secure your account");
+            player.sendMessage(ChatColor.RED+"=============================================");
+            event.setCancelled(true);
         }
     }
 

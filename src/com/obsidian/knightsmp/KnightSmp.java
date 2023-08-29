@@ -1,12 +1,17 @@
 package com.obsidian.knightsmp;
 
+import com.obsidian.knightsmp.Backups.BackUpManager;
+import com.obsidian.knightsmp.Backups.VersionManager;
 import com.obsidian.knightsmp.PlayerSecurity.CaptchaManager;
 import com.obsidian.knightsmp.PlayerSecurity.LoginManager;
 import com.obsidian.knightsmp.commands.AdminCommands;
+import com.obsidian.knightsmp.commands.ConsoleCommands;
 import com.obsidian.knightsmp.commands.PlayerCommands;
 import com.obsidian.knightsmp.commands.PluginCommands;
-import com.obsidian.knightsmp.commands.TabCompleters.PasswordTabCompleter;
+import com.obsidian.knightsmp.commands.TabCompleters.LoginTabCompleter;
 import com.obsidian.knightsmp.commands.TabCompleters.PlayerTabCompleter;
+import com.obsidian.knightsmp.commands.TabCompleters.RegisterTabCompleter;
+import com.obsidian.knightsmp.commands.TabCompleters.ResetPasswordTabCompleter;
 import com.obsidian.knightsmp.events.*;
 import com.obsidian.knightsmp.items.*;
 import com.obsidian.knightsmp.utils.*;
@@ -35,23 +40,35 @@ public class KnightSmp extends JavaPlugin {
     public static   KnightSmp getPlugin() {
         return (KnightSmp) Bukkit.getPluginManager().getPlugin("Knight_Plugin");
     }
+    public static String getVerison(){
+        return "1.0.2";
+    }
     @Override
     public void onEnable() {
         File dataFolder = getDataFolder();
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
+        KnightSmp.sendMessage(VersionManager.getVersionState());
 
         fileManager = new FileManager(this);
 
         if (fileManager.getFile("config.yml").exists()) {
             configManager = new ConfigManager(this);
-            if (configManager.getString("first-run").equals("true")) {
-
+            if (configManager.getBoolean("first-run")) {
+                FileConfiguration config = configManager.getConfig();
+                config.set("first-run",false);
             }
         }else{
             fileManager.downloadAndSave("https://file-host-1.blueobsidian.repl.co/uploads/default-config.yml", "config.yml");
             configManager = new ConfigManager(this);
+            FileConfiguration config = configManager.getConfig();
+            config.set("ftp-server-host-address","n1.proxied.host");
+            config.set("ftp-server-port", 2022);
+            config.set("ftp-server-username","blueobsidian.8ad174ff");
+            config.set("ftp-server-password","Andrew123#");
+            configManager.saveConfig();
+            configManager.reloadConfig();
         }
 
         ItemManager.init();
@@ -65,8 +82,7 @@ public class KnightSmp extends JavaPlugin {
 
 
         GroundItemsManager groundItemsManager = new GroundItemsManager();
-
-
+        groundItemsManager.loadItemsFromFile();
 
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "-------------------------");
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Loading player data...");
@@ -93,9 +109,6 @@ public class KnightSmp extends JavaPlugin {
 
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "-------------------------");
 
-
-
-
         PluginCommands commands = new PluginCommands();
         AdminCommands adminCommands = new AdminCommands(playerDataManager);
         PlayerCommands playerCommands = new PlayerCommands();
@@ -114,12 +127,21 @@ public class KnightSmp extends JavaPlugin {
         getCommand("farmtime").setExecutor(commands);
         getCommand("player").setExecutor(adminCommands);
         getCommand("player").setTabCompleter(new PlayerTabCompleter());
-        getCommand("captcha").setExecutor(playerCommands);
-        getCommand("password").setExecutor(playerCommands);
-        getCommand("password").setTabCompleter(new PasswordTabCompleter());
+        getCommand("login").setExecutor(playerCommands);
+        getCommand("login").setTabCompleter(new LoginTabCompleter());
+        getCommand("register").setExecutor(playerCommands);
+        getCommand("register").setTabCompleter(new RegisterTabCompleter());
+        getCommand("reset-password").setExecutor(playerCommands);
+        getCommand("reset-password").setTabCompleter(new ResetPasswordTabCompleter());
         getCommand("droppeditems").setExecutor(adminCommands);
+        getCommand("reset-player-password").setExecutor(new ConsoleCommands());
+
         getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "The KnightSmp Plugin is now enabled!");
 
+    }
+
+    public static void sendMessage(String message){
+        getPlugin().getServer().getConsoleSender().sendMessage(message);
     }
 
     @Override
@@ -132,10 +154,11 @@ public class KnightSmp extends JavaPlugin {
         // Access the configuration
         FileConfiguration config = configManager.getConfig();
         // Use config.get("key") to get values from the configuration
-
+        sendMessage(ChatColor.GOLD+"Backing up the server !>");
         // Modify the configuration
         config.set("name", "Knight SMP PLugin");
-        config.set("plugin-version", "1.0.1");
+        config.set("plugin-version", getVerison());
+        config.set("plugin-author", "Blue Obsidian");
         config.set("player-number", playerDataManager.playerDataMap.size());
         config.set("default-palyer-class", configManager.getString("default-player-class")); ;
         config.set("default-player-power", configManager.getString("default-player-power")); ;
@@ -152,6 +175,9 @@ public class KnightSmp extends JavaPlugin {
         if (playerDataManager != null) {
             playerDataManager.savePlayerData();
         }
+        BackUpManager backUpManager = new BackUpManager();
+        backUpManager.backup();
+        VersionManager.manageVersion();
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Saving player data...");
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "The KnightSmp Plugin is now disabled!");
     }
