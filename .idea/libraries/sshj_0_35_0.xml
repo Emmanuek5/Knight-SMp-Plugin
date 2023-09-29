@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="sshj-0.35.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Dependencies/sshj-0.35.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

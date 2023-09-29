@@ -1,11 +1,13 @@
 package com.obsidian.knightsmp.commands;
 
 import com.obsidian.knightsmp.KnightSmp;
-import com.obsidian.knightsmp.events.GroundItemsManager;
+import com.obsidian.knightsmp.PlayerSecurity.CaptchaManager;
+import com.obsidian.knightsmp.PlayerSecurity.LoginManager;
+import com.obsidian.knightsmp.managers.GroundItemsManager;
 import com.obsidian.knightsmp.gui.DisplayGui;
 import com.obsidian.knightsmp.items.ItemManager;
 import com.obsidian.knightsmp.items.fragments.FragrentManager;
-import com.obsidian.knightsmp.utils.PlayerDataManager;
+import com.obsidian.knightsmp.managers.PlayerDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -126,7 +128,9 @@ PlayerDataManager playerDataManager;
                         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
                         if (offlinePlayer != null) {
                             playerDataManager.setCaptcha(offlinePlayer.getUniqueId(), "");
-                            player.sendMessage(ChatColor.GREEN + "Captcha reset for " + offlinePlayer.getName());
+                            LoginManager.setSuspiciousLogin(offlinePlayer.getName(), false);
+                            player.sendMessage(ChatColor.GREEN + "Captcha reset for " + offlinePlayer.getName()+ " thier password is now \"password\"");
+
                             return true;
                         }
                         player.sendMessage(ChatColor.RED + "Player not found!");
@@ -135,6 +139,7 @@ PlayerDataManager playerDataManager;
             }
         } else if (cmd.getName().equalsIgnoreCase("droppeditems")) {
             GroundItemsManager groundItemsManager = new GroundItemsManager();
+            groundItemsManager.loadItemsFromFile();
            List<ItemStack> groundItems = groundItemsManager.getItemsOnGround();
             DisplayGui displayGui = new DisplayGui(ChatColor.BLUE+"Dropped Items", 54);
                 displayGui.updateItems(groundItems);

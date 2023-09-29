@@ -1,4 +1,4 @@
-package com.obsidian.knightsmp.utils;
+package com.obsidian.knightsmp.managers;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

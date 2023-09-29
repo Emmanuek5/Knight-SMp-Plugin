@@ -178,22 +178,24 @@ public class ItemEvents implements Listener {
         Player player = (Player) event.getWhoClicked();
         ItemStack craftedItem = event.getInventory().getResult();
         if (ItemManager.isCustomItem(craftedItem)) {
-            // Define the slot where the required item should be
-            int requiredSlot = 8; // Change this to the appropriate slot index
-            // Get the item in the required slot
-            ItemStack requiredSlotItem = event.getInventory().getItem(requiredSlot);
-            assert requiredSlotItem != null;
-            Bukkit.getServer().getConsoleSender().sendMessage(requiredSlotItem.toString());
-            Bukkit.getServer().getConsoleSender().sendMessage(String.valueOf(FragrentManager.isFragment(requiredSlotItem)));
-            // Check if the required item is your custom item with the same metadata
-            if (FragrentManager.isFragment(requiredSlotItem)) {
-           player.sendMessage("§2You have crafted a Sledge Fragment!");
-                AdvancementDisplay rootDisplay = new AdvancementDisplay(ItemManager.pickaxe, "Hidden Depths §c", AdvancementFrameType.TASK, true, true, 0, 0, "Craft The Sledge Hammer Item!");
+          if (craftedItem.equals(ItemManager.pickaxe)) {
+              // Define the slot where the required item should be
+              int requiredSlot = 8; // Change this to the appropriate slot index
+              // Get the item in the required slot
+              ItemStack requiredSlotItem = event.getInventory().getItem(requiredSlot);
+              assert requiredSlotItem != null;
+              Bukkit.getServer().getConsoleSender().sendMessage(requiredSlotItem.toString());
+              Bukkit.getServer().getConsoleSender().sendMessage(String.valueOf(FragrentManager.isFragment(requiredSlotItem)));
+              // Check if the required item is your custom item with the same metadata
+              if (FragrentManager.isFragment(requiredSlotItem)) {
+                  player.sendMessage("§2You have crafted a Sledge Fragment!");
+                  AdvancementDisplay rootDisplay = new AdvancementDisplay(ItemManager.pickaxe, "Hidden Depths §c", AdvancementFrameType.TASK, true, true, 0, 0, "Craft The Sledge Hammer Item!");
 
-                return;
-            }
-            // Prevent crafting by cancelling the event
-            event.setCancelled(true);
+                  return;
+              }
+              // Prevent crafting by cancelling the event
+              event.setCancelled(true);
+          }
         }
         if (event.getCurrentItem().getItemMeta().equals(ItemManager.wand.getItemMeta())) {
             ItemStack icon = event.getCurrentItem();

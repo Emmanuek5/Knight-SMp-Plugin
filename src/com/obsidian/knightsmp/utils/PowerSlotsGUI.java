@@ -1,7 +1,6 @@
 package com.obsidian.knightsmp.utils;
 
-import com.obsidian.knightsmp.KnightSmp;
-import net.ess3.api.IEssentials;
+import com.obsidian.knightsmp.managers.PlayerDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

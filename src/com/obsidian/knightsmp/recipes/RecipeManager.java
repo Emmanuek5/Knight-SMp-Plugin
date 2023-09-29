@@ -8,7 +8,6 @@ public class RecipeManager extends ItemManager {
 
     public void registerRecipes() {
         Bukkit.getServer().addRecipe(SledgeHammerItem.getRecipe());
-        Bukkit.getServer().addRecipe(WandItem.getRecipe());
         Bukkit.getServer().addRecipe(StaffItem.getRecipe());
         Bukkit.getServer().addRecipe(ChestPlateItem.getRecipe());
         Bukkit.getServer().addRecipe(HelmetItem.getRecipe());

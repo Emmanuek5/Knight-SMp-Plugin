@@ -20,32 +20,33 @@ public class HelmetItem extends ItemManager {
         ItemStack item = new ItemStack(Material.NETHERITE_HELMET, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setCustomModelData(1893);
-        meta.setDisplayName("§5The §9Knights Helmet§5");
+        meta.setDisplayName(ChatColor.LIGHT_PURPLE+"Amethyst Helmet");
           List lore = new ArrayList<String>();
-        lore.add(ChatColor.DARK_PURPLE+"Protection Against Evil");
+        lore.add(ChatColor.DARK_GRAY+"For The True Warriors");
         meta.setLore(lore);
-        meta.addEnchant(Enchantment.WATER_WORKER, 3, true);
-        meta.addEnchant(Enchantment.OXYGEN, 3, true);
-        meta.addEnchant(Enchantment.DURABILITY,3, true);
-        meta.addEnchant(Enchantment.LUCK,3, true);
-        meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
-        meta.addEnchant(Enchantment.PROTECTION_FIRE, 5, true);
-        meta.addEnchant(Enchantment.PROTECTION_FALL, 5, true);
-        meta.addEnchant(Enchantment.PROTECTION_PROJECTILE, 5, true);
-        meta.addEnchant(Enchantment.BINDING_CURSE,3, true);
+        meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 8, true);
+        meta.addEnchant(Enchantment.PROTECTION_FIRE, 8, true);
+        meta.addEnchant(Enchantment.PROTECTION_EXPLOSIONS, 8, true);
+        meta.addEnchant(Enchantment.PROTECTION_PROJECTILE, 8, true);
+        meta.addEnchant(Enchantment.PROTECTION_FALL, 8, true);
+        meta.addEnchant(Enchantment.MENDING, 8, true);
+        meta.addEnchant(Enchantment.DURABILITY, 8, true);
+        meta.addEnchant(Enchantment.OXYGEN,8, true);
+        meta.addEnchant(Enchantment.WATER_WORKER,8, true);
+        meta.addEnchant(Enchantment.THORNS, 2, true);
         meta.setUnbreakable(true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
         item.setItemMeta(meta);
         helmet = item;
 
        sr = new ShapedRecipe(new NamespacedKey("knightsmp", "helmet"),item);
-        sr.shape("DSD"," N ","BGB");
-        sr.setIngredient('D', Material.DIAMOND);
-        sr.setIngredient('G', Material.GOLDEN_APPLE);
+        sr.shape("DSD","ANA","BGB");
+        sr.setIngredient('D', Material.DIAMOND_BLOCK);
+        sr.setIngredient('G', Material.ENCHANTED_GOLDEN_APPLE);
         sr.setIngredient('B', Material.BLAZE_POWDER);
         sr.setIngredient('N', Material.NETHERITE_HELMET);
         sr.setIngredient('S', Material.SOUL_LANTERN);
+        sr.setIngredient('A', Material.AMETHYST_SHARD);
         Bukkit.getServer().addRecipe(sr);
 
     }

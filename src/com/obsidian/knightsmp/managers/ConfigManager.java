@@ -1,4 +1,4 @@
-package com.obsidian.knightsmp.utils;
+package com.obsidian.knightsmp.managers;
 
 import com.obsidian.knightsmp.KnightSmp;
 import org.bukkit.configuration.ConfigurationSection;

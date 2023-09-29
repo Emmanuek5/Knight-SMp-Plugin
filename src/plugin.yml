@@ -1,5 +1,5 @@
 name: Knight_Plugin
-version: 1.0.1
+version: 1.0.5
 description: A plugin for KnightsMP
 main: com.obsidian.knightsmp.KnightSmp
 author: Blue Obsidian
@@ -24,6 +24,9 @@ permissions:
     default: op
   farmtime:
     description: Farm Mobs
+    default: op
+  console:
+    description: Console
     default: op
   player:
     description: Get a player's data
@@ -84,13 +87,6 @@ commands:
       - player
       - pl
       - player
-  captcha:
-    description: Captcha
-    usage: /<command> [captcha]
-  password:
-    description: Password
-    usage: /<command> [password]
-    permission: knightsmp.password
   droppeditems:
     description: Dropped Items
     usage: /<command>
@@ -98,3 +94,10 @@ commands:
     aliases:
       - dippeditems
       - di
+  download-latest-version:
+    description: Download Latest Version
+    usage: /<command>
+    permission: knightsmp.console
+    aliases:
+      - download-latest-version
+      - dlv

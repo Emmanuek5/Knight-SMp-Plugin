@@ -19,15 +19,15 @@ public class ItemManager {
     public static ItemStack book;
     public static void init() {
         FragrentManager.init();
-     StaffItem staff = new StaffItem();
-     StaffItem.createStaff();
-     WandItem wand = new WandItem();
-     WandItem.createWand();
-     ChestPlateItem.createChestPlate();
-     HelmetItem.createHelmet();
-    LeggingsItem.createLeggings();
-    SledgeHammerItem.createSledgeHammer();
-    BookItem.createBook();
+        StaffItem.createStaff();
+        WandItem.createWand();
+        ChestPlateItem.createChestPlate();
+        HelmetItem.createHelmet();
+        LeggingsItem.createLeggings();
+        BootItem.createBoots();
+        ExaliburItem.createExalibur();
+        SledgeHammerItem.createSledgeHammer();
+        BookItem.createBook();
     }
 
 

@@ -1,25 +1,18 @@
 package com.obsidian.knightsmp.events;
 
-import com.earth2me.essentials.PlayerList;
 import com.fren_gor.ultimateAdvancementAPI.AdvancementTab;
 import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
 import com.fren_gor.ultimateAdvancementAPI.advancement.RootAdvancement;
-import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
-import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.fren_gor.ultimateAdvancementAPI.events.PlayerLoadingCompletedEvent;
 import com.obsidian.knightsmp.KnightSmp;
 import com.obsidian.knightsmp.PlayerSecurity.CaptchaManager;
 import com.obsidian.knightsmp.PlayerSecurity.LoginManager;
 import com.obsidian.knightsmp.items.ItemManager;
 import com.obsidian.knightsmp.items.fragments.FragrentManager;
-import com.obsidian.knightsmp.utils.ArmouredEntity;
 import com.obsidian.knightsmp.utils.PlayerData;
-import com.obsidian.knightsmp.utils.PlayerDataManager;
+import com.obsidian.knightsmp.managers.PlayerDataManager;
 import com.obsidian.knightsmp.utils.PowerSlotsScoreboard;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,8 +21,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -58,56 +49,21 @@ public class PlayerEvents implements Listener {
         if (!playerDataManager.hasPlayerData(player)) {
             event.setJoinMessage(ChatColor.GOLD + player.getName() + ", Welcome to the Knights SMP! Enjoy your stay.");
         } else {
-          if (LoginManager.isSuspiciousLogin(player.getName())){
-              event.setJoinMessage(ChatColor.RED + player.getName() + ", Welcome back to the Knights SMP!");
-              player.sendMessage(ChatColor.RED + "Your IP has been changed, Run /login <password> to secure your account");
-          }else {
+
               event.setJoinMessage(ChatColor.GREEN + player.getName() + ", Welcome back to the Knights SMP!");
           }
-        }
-
         // Assuming you have a method to initialize the scoreboard in your PowerSlotsScoreboard class
         // Cycle through power slots and apply effects
 
-        player.setResourcePack("https://obsidianator-code-1.blueobsidian.repl.co/data.zip");
-    }
-
-
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-        Player player = event.getPlayer();
-        String message = event.getMessage();
-        ChatColor playerNameColor = ChatColor.getByChar(player.getName().charAt(1));
-        if (playerNameColor == null) {
-            playerNameColor = ChatColor.WHITE; // Default to white if the player's name color is not recognized
-        }
-        if (!CaptchaManager.hasCaptcha(player)) {
-            if (!captchaManager.hasCaptcha(player)) {
-
-                event.setFormat(ChatColor.DARK_RED + "[Unverified] "+ playerNameColor.getChar() + player.getName() + ChatColor.GREEN + " >>> " + ChatColor.WHITE + message);
-                player.sendMessage(ChatColor.GOLD + "To verify your account, run /register <password> <password>");
-            }
-        }
-        if (LoginManager.isSuspiciousLogin(player.getName())) {
-            event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "Your IP has been changed. Run /login <password> to secure your account.");
-        }
+        player.setResourcePack("https://file-host-1.blueobsidian.repl.co/download.php?file=data.zip");
     }
 
 
 
-    @EventHandler
-    public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        Player player = event.getPlayer();
-        String command = event.getMessage().substring(1); // Removing the "/" at the beginning
 
-        if (LoginManager.isSuspiciousLogin(player.getName())) {
-            if (!command.startsWith("login")) {
-                player.sendMessage("Your IP has been changed. Run /login <password> to login to your account.");
-                event.setCancelled(true);
-            }
-        }
-    }
+
+
+
 
 
     @EventHandler
@@ -115,22 +71,11 @@ public class PlayerEvents implements Listener {
         Player player = event.getPlayer();
         String ip = event.getPlayer().getAddress().getAddress().getHostAddress();
         powerSlotsScoreboard = new PowerSlotsScoreboard(player, playerDataManager);
-        if (LoginManager.isSuspiciousLogin(player.getName())) {
-
-        }else {
-            if (playerDataManager.getLastIp(event.getPlayer()) == null || playerDataManager.getLastIp(event.getPlayer()).equals("")) {
-                playerDataManager.setLastIp(event.getPlayer(), ip);
-            } else if (playerDataManager.getLastIp(event.getPlayer()).equals(ip)) {
-
-            }
-        }
-        powerSlotsScoreboard = new PowerSlotsScoreboard(player, playerDataManager);
         powerSlotsScoreboard.initScoreboard();
         if (!playerDataManager.hasPlayerData(player)) {
             player.sendMessage(ChatColor.LIGHT_PURPLE + "Your current class is: " + playerDataManager.getPlayerClass(player));
             player.sendMessage(ChatColor.LIGHT_PURPLE + "To Upgrade your class, fill up your power slots");
             player.sendMessage(ChatColor.LIGHT_PURPLE + "Get Power Items from the Fragrents");
-            player.sendMessage(ChatColor.YELLOW+"Do /register <password> <password> to secure your account from other players");
             player.resetTitle();
             player.getInventory().addItem(ItemManager.book);
             // List of available powers
@@ -166,16 +111,10 @@ public class PlayerEvents implements Listener {
                     }
                 }
             }
-            if (!captchaManager.hasCaptcha(player)){
-                player.sendMessage(ChatColor.RED + "Your account is not secured");
-                player.sendMessage(ChatColor.RED+"Run  /register <password> <password> to secure your account");
-            }
-            if (LoginManager.isSuspiciousLogin(player.getName())){
-                KnightSmp.getPlugin().getServer().getConsoleSender().sendMessage("SUSPICIOUS LOGIN DETECTED BY : " + player.getName());
-            }else {
+
                 player.sendMessage(ChatColor.LIGHT_PURPLE + "Your current class is: " + playerDataManager.getPlayerClass(player));
                 player.sendMessage(ChatColor.LIGHT_PURPLE + "Your current number of power slots filled is: " + playerDataManager.getFilledPowerSlots(player) + "/10");
-            }
+
         }
     }
 

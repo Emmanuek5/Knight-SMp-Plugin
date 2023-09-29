@@ -1,8 +1,8 @@
-package com.obsidian.knightsmp.events;
+package com.obsidian.knightsmp.managers;
 
 import com.obsidian.knightsmp.KnightSmp;
+import com.obsidian.knightsmp.events.GroundItemsCleanup;
 import com.obsidian.knightsmp.gui.DisplayGui;
-import com.obsidian.knightsmp.utils.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,21 +24,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GroundItemsManager implements Listener {
 
     private final FileManager fileManager;
     private final String itemCacheFolder = "/item-cache";
   public  List<ItemStack> itemsOnGround = new ArrayList<>();
-
+    private final GroundItemsCleanup itemsCleanup;
     public GroundItemsManager() {
         this.fileManager = KnightSmp.fileManager;
+        this.itemsCleanup = new GroundItemsCleanup(KnightSmp.getPlugin(), itemsOnGround); // Initialize the cleanup task
     }
 
     public List<ItemStack> getItemsOnGround() {
         KnightSmp.getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "Loaded " +itemsOnGround.size() + " items from cache, "+ itemsOnGround);
-        // Add items from actual items on the ground
+        // Add items from actual items on the
         for (Item itemEntity : Bukkit.getWorlds().get(0).getEntitiesByClass(Item.class)) {
           itemsOnGround.add(itemEntity.getItemStack());
         }

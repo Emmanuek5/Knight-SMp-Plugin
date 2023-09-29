@@ -1,10 +1,6 @@
 package com.obsidian.knightsmp.commands;
 
-import com.obsidian.knightsmp.KnightSmp;
-import com.obsidian.knightsmp.PlayerSecurity.CaptchaManager;
 import com.obsidian.knightsmp.PlayerSecurity.LoginManager;
-import com.obsidian.knightsmp.utils.PlayerDataManager;
-import com.obsidian.knightsmp.utils.PowerSlotsGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

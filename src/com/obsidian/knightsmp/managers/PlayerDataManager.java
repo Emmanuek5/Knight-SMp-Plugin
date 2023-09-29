@@ -1,5 +1,7 @@
-package com.obsidian.knightsmp.utils;
+package com.obsidian.knightsmp.managers;
 
+import com.obsidian.knightsmp.KnightSmp;
+import com.obsidian.knightsmp.utils.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,6 +30,9 @@ public class PlayerDataManager {
     public PlayerData getPlayerData(Player player) {
         return playerDataMap.get(player.getUniqueId());
     }
+    public PlayerData getPlayerData(UUID player) {
+        return playerDataMap.get(player);
+    }
 
     public void setPlayerData(Player player, PlayerData playerData) {
         playerDataMap.put(player.getUniqueId(), playerData);
@@ -47,6 +52,13 @@ public class PlayerDataManager {
     }
     public String getCaptcha(Player player) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            return playerData.getCaptcha();
+        }
+        return null;
+    }
+    public String getCaptcha(UUID player) {
+        PlayerData playerData = playerDataMap.get(player);
         if (playerData != null) {
             return playerData.getCaptcha();
         }
@@ -160,7 +172,7 @@ public class PlayerDataManager {
 
     public OfflinePlayer getOfflinePlayer(String playerName) {
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-            if (offlinePlayer.getName() != null && offlinePlayer.getName().equalsIgnoreCase(playerName)) {
+            if (Objects.equals(offlinePlayer.getName(), playerName)) {
                 return offlinePlayer;
             }
         }
@@ -203,8 +215,24 @@ public class PlayerDataManager {
         }
         return null;
     }
+
+    public String[] getPowerSlots(UUID player) {
+        PlayerData playerData = playerDataMap.get(player);
+        if (playerData != null) {
+            return playerData.getPowerSlots();
+        }
+        return null;
+    }
     public ItemStack[] getPlayerLastInventory(Player player) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            return playerData.getLastInventory();
+        }
+        return null;
+    }
+
+    public ItemStack[] getPlayerLastInventory(UUID player) {
+        PlayerData playerData = playerDataMap.get(player);
         if (playerData != null) {
             return playerData.getLastInventory();
         }
@@ -228,6 +256,17 @@ public class PlayerDataManager {
         // If player data is not available, return a default class
         return "peasant"; // Change this to your desired default class
     }
+
+    public String getPlayerClass(UUID player) {
+        UUID playerUUID = player;
+        PlayerData playerData = playerDataMap.get(playerUUID);
+        if (playerData != null) {
+            return playerData.getPlayerClass();
+        }
+
+        // If player data is not available, return a default class
+        return "peasant"; // Change this to your desired default class
+    }
     public void setPlayerClass(Player player, String playerClass) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
         if (playerData != null) {
@@ -235,6 +274,8 @@ public class PlayerDataManager {
             player.sendMessage(ChatColor.GREEN + "You've been promoted to " + playerClass);
         }
     }
+
+
 
     public void setPowerSlots(Player player, String[] powerSlots) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
