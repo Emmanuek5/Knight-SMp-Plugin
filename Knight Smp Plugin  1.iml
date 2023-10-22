@@ -16,12 +16,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="spigot-api-1.20.1-R0.1-20230810.090724-51" level="project" />
     <orderEntry type="library" name="lssmp-2.3.21" level="project" />
     <orderEntry type="library" name="CrazyAdvancementsAPI (1)" level="project" />
-    <orderEntry type="library" name="spigot-api-1.20.1-R0.1-SNAPSHOT-shaded" level="project" />
-    <orderEntry type="library" name="UltimateAdvancementAPI-2.2.5-(1.15-1.20.1)" level="project" />
-    <orderEntry type="library" name="spigot-api-1.9.4-R0.1-20160531.105800-24" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -37,5 +33,7 @@
     <orderEntry type="library" name="sshj-0.35.0" level="project" />
     <orderEntry type="library" name="eddsa-0.3.0-sources" level="project" />
     <orderEntry type="library" name="commons-vfs2-2.9.0" level="project" />
+    <orderEntry type="library" name="spigot-api-1.20.2-R0.1-SNAPSHOT-shaded" level="project" />
+    <orderEntry type="library" name="UltimateAdvancementAPI-2.2.5-(1.15-1.20.1)" level="project" />
   </component>
 </module>

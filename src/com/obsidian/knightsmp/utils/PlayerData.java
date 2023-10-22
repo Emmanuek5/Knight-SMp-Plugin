@@ -8,6 +8,7 @@ import java.util.UUID;
 public class PlayerData implements Serializable {
 
     private ItemStack[] lastInventory;
+    private ItemStack[] inventory;
     private UUID playerUUID;
     private String playerName;
     private int playerScore;
@@ -36,6 +37,13 @@ public class PlayerData implements Serializable {
     }
     public void setLastInventory(ItemStack[] lastInventory) {
         this.lastInventory = lastInventory;
+    }
+
+    public ItemStack[] getInventory() {
+        return inventory;
+    }
+    public void setInventory(ItemStack[] inventory) {
+        this.inventory = inventory;
     }
     public UUID getPlayerUUID() {
         return playerUUID;

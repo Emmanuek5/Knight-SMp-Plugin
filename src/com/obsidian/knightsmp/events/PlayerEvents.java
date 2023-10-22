@@ -9,15 +9,20 @@ import com.obsidian.knightsmp.PlayerSecurity.CaptchaManager;
 import com.obsidian.knightsmp.PlayerSecurity.LoginManager;
 import com.obsidian.knightsmp.items.ItemManager;
 import com.obsidian.knightsmp.items.fragments.FragrentManager;
+import com.obsidian.knightsmp.managers.ThreadManager;
 import com.obsidian.knightsmp.utils.PlayerData;
 import com.obsidian.knightsmp.managers.PlayerDataManager;
 import com.obsidian.knightsmp.utils.PowerSlotsScoreboard;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -61,15 +66,10 @@ public class PlayerEvents implements Listener {
 
 
 
-
-
-
-
-
     @EventHandler
-    public  void  onPlayerLoad(PlayerLoadingCompletedEvent event) {
+    public  void  onPlayerLoad(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        String ip = event.getPlayer().getAddress().getAddress().getHostAddress();
+        String ip = Objects.requireNonNull(event.getPlayer().getAddress()).getAddress().getHostAddress();
         powerSlotsScoreboard = new PowerSlotsScoreboard(player, playerDataManager);
         powerSlotsScoreboard.initScoreboard();
         if (!playerDataManager.hasPlayerData(player)) {
@@ -119,6 +119,19 @@ public class PlayerEvents implements Listener {
     }
 
 
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+
+        // Use ThreadManager to run the task in another thread
+        ThreadManager.createThread("PlayerMoveThread-" + player.getName(), () -> {
+            if (playerDataManager.hasPlayerData(player)) {
+                playerDataManager.setPlayerInventory(player, player.getInventory().getContents());
+            }
+        });
+
+    }
+
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -142,6 +155,7 @@ public class PlayerEvents implements Listener {
         event.setKeepInventory(false);
         player.dropItem(true);
         playerItemsMap.put(player.getName(), savedItems);
+        playerDataManager.setPlayerInventory(player, player.getInventory().getContents());
     }
 
 
@@ -153,6 +167,7 @@ public class PlayerEvents implements Listener {
             player.getInventory().setContents(savedItems);
             playerItemsMap.remove(player.getName());
         }
+        playerDataManager.setPlayerInventory(player, player.getInventory().getContents());
     }
 
 

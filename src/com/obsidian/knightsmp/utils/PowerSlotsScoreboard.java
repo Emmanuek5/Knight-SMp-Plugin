@@ -91,13 +91,12 @@ public class PowerSlotsScoreboard {
     }
 
 
-    public static double roundUp(double value, int decimalPlaces) {
-        double scale = Math.pow(10, decimalPlaces);
-        return Math.ceil(value * scale) / scale;
-    }
-
     public static String formatBalance(double balance) {
-        if (balance >= 1_000_000) {
+        if (balance >= 1_000_000_000_000L) {
+            return roundUp(balance / 1_000_000_000_000L, 1) + "T";
+        } else if (balance >= 1_000_000_000L) {
+            return roundUp(balance / 1_000_000_000L, 1) + "B";
+        } else if (balance >= 1_000_000) {
             return roundUp(balance / 1_000_000, 1) + "M";
         } else if (balance >= 1_000) {
             return roundUp(balance / 1_000, 1) + "K";
@@ -105,6 +104,17 @@ public class PowerSlotsScoreboard {
             return String.valueOf(balance);
         }
     }
+
+    private static double roundUp(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = (long) Math.ceil(value);
+        return (double) tmp / factor;
+    }
+
+
 
 
     private String[] getPlayerPowerSlots(Player player) {

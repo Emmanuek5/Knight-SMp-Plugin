@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -75,6 +76,7 @@ public class PlayerDataManager {
     public boolean hasPlayerData(Player player) {
         return playerDataMap.containsKey(player.getUniqueId());
     }
+    public boolean hasPlayerData(UUID player) {return playerDataMap.containsKey(player);}
 
     public void setPowerSlot(Player player, int slotIndex, String power) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
@@ -82,6 +84,8 @@ public class PlayerDataManager {
             playerData.setPowerSlot(slotIndex, power);
         }
     }
+
+
 
     public void setNextPowerSlot(Player player, String power) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
@@ -246,6 +250,44 @@ public class PlayerDataManager {
         }
     }
 
+    public void setPlayerLastInventory(UUID player, ItemStack[] inventory) {
+        PlayerData playerData = playerDataMap.get(player);
+        if (playerData != null) {
+            playerData.setLastInventory(inventory);
+        }
+    }
+
+    public ItemStack[] getPlayerInventory(Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            return playerData.getInventory();
+        }
+        return null;
+    }
+
+    public ItemStack[] getPlayerInventory(UUID player) {
+        PlayerData playerData = playerDataMap.get(player);
+        if (playerData != null) {
+            return playerData.getInventory();
+        }
+        return null;
+    }
+
+    public void setPlayerInventory(Player player, ItemStack[] inventory) {
+
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setInventory(inventory);
+        }
+    }
+
+    public void setPlayerInventory(UUID player, ItemStack[] inventory) {
+        PlayerData playerData = playerDataMap.get(player);
+        if (playerData != null) {
+            playerData.setInventory(inventory);
+        }
+    }
+
     public String getPlayerClass(Player player) {
         UUID playerUUID = player.getUniqueId();
         PlayerData playerData = playerDataMap.get(playerUUID);
@@ -350,6 +392,19 @@ public class PlayerDataManager {
                         playerData.setLastInventory(lastInventory);
                     }
 
+                    // Deserialize inventory if available
+                    if (yamlData.containsKey("inventory")) {
+                        List<Map<String, Object>> inventoryList = (List<Map<String, Object>>) yamlData.get("inventory");
+                        ItemStack[] inventory = new ItemStack[inventoryList.size()];
+                        for (int i = 0; i < inventoryList.size(); i++) {
+                            Map<String, Object> itemData = inventoryList.get(i);
+                            Material itemType = Material.valueOf((String) itemData.get("type"));
+                            int itemAmount = (int) itemData.get("amount");
+                            inventory[i] = new ItemStack(itemType, itemAmount);
+                        }
+                        playerData.setInventory(inventory);
+                    }
+
                     // Set power slots (if available)
                     if (yamlData.containsKey("powerSlots")) {
                         List<String> powerSlotsList = (List<String>) yamlData.get("powerSlots");
@@ -429,6 +484,23 @@ public class PlayerDataManager {
                     dataMap.put("lastInventory", itemsList);
                 }
 
+                ItemStack [] inventory = playerData.getInventory();
+                if (inventory != null) {
+                    List<Map<String, Object>> itemsList = new ArrayList<>();
+                    for (int i = 0; i < inventory.length; i++) {
+                        ItemStack item = inventory[i];
+                        if (item != null && item.getType() != Material.AIR) {
+                            Map<String, Object> itemMap = new LinkedHashMap<>();
+                            itemMap.put("type", item.getType().name());
+                            itemMap.put("amount", item.getAmount());
+
+                            // Save power slot if it exists
+                            itemsList.add(itemMap);
+                        }
+                    }
+                    dataMap.put("inventory", itemsList);
+                }
+
                 // Write the YAML using SnakeYAML
                 yaml.dump(dataMap, writer);
             } catch (IOException e) {
@@ -449,5 +521,6 @@ public class PlayerDataManager {
         }
         return false; // Player does not have the specified power slot
     }
+
 
 }

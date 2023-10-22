@@ -1,5 +1,6 @@
 package com.obsidian.knightsmp.events;
 
+import com.obsidian.knightsmp.managers.ThreadManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,7 +14,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GroundItemsCleanup implements Listener {
@@ -24,9 +24,13 @@ public class GroundItemsCleanup implements Listener {
     public GroundItemsCleanup(Plugin plugin, List<ItemStack> itemsOnGround) {
         this.plugin = plugin;
         this.itemsOnGround = itemsOnGround;
-
         // Schedule the cleanup task to run every 500 seconds (20 ticks per second)
-        new CleanupTask().runTaskTimer(plugin, 0, 500 * 20);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ThreadManager.createThread("GroundItemsCleanup", () -> new CleanupTask());
+            }
+        }.runTaskTimer(plugin, 5, 1000);
     }
 
     @EventHandler
@@ -42,10 +46,9 @@ public class GroundItemsCleanup implements Listener {
 
             // Send warning messages to players
             for (Player player : Bukkit.getOnlinePlayers()) {
-                long timeLeft = ((currentTime + 500000) - (currentTime % 1000000)) - currentTime; // Time left until cleanup
-                if (timeLeft == 60000 || timeLeft == 20000 || timeLeft == 10000) {
-                    player.sendMessage(ChatColor.YELLOW + "Ground items will be cleaned up in " + (timeLeft / 1000) + " seconds!");
-                }
+
+
+                player.sendMessage(ChatColor.YELLOW + "Ground items cleanup in progress.");
             }
             // Clear all entities on the ground
             for (Item itemEntity : Bukkit.getWorlds().get(0).getEntitiesByClass(Item.class)) {

@@ -79,13 +79,7 @@ public class FragmentEvents implements Listener {
                             Location startLocation = playerLocation.clone().add(direction.multiply(4)); // Adjust the multiplier as needed
                             ArmouredEntity armouredEntity = new ArmouredEntity();
                             armouredEntity.spawnArmoredZombieWithTarget(startLocation, player, 1);
-                            // Generate 5 lightning bolts in a row
                             setCooldown(player, powerSlot);
-                            for (int i = 0; i < 5; i++) {
-                                Location strikeLocation = startLocation.clone().add(direction.multiply(i * 7));
-                                player.getWorld().strikeLightning(strikeLocation);
-
-                            }
                             // Add more cases for other power slots as needed
                         }
                     }

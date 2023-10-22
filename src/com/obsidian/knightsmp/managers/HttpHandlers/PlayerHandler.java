@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import static com.obsidian.knightsmp.KnightSmp.playerDataManager;
 
@@ -19,7 +20,6 @@ public class PlayerHandler implements RouteHandler,HttpHandler {
 
     @Override
     public String getRoute() {
-        KnightSmp.sendMessage("PlayerHandler.getRoute() called");
         return "/api/player";
     }
 
@@ -43,12 +43,14 @@ public class PlayerHandler implements RouteHandler,HttpHandler {
             playerInfoList.add("Name: " + player.getName());
             playerInfoList.add("UUID: " + player.getUniqueId());
             playerInfoList.add("First played: " + player.getFirstPlayed());
+            playerInfoList.add("Last Position: " + Objects.requireNonNull(player.getPlayer()).getLocation());
             playerInfoList.add("Last played: " + player.getLastPlayed());
             playerInfoList.add("online: " + player.isOnline());
             playerInfoList.add("banned: " + player.isBanned());
             playerInfoList.add("whitelisted: " + player.isWhitelisted());
             playerInfoList.add("op: " + player.isOp());
             playerInfoList.add("class: " + playerDataManager.getPlayerClass(player.getUniqueId()));
+            playerInfoList.add("inventory: " + Arrays.toString(playerDataManager.getPlayerInventory(player.getUniqueId())));
             String[] powerSots = playerDataManager.getPowerSlots(player.getUniqueId());
             for (int i = 0; i < powerSots.length; i++) {
                 playerInfoList.add("powerslot-" + i + ": " + powerSots[i]);

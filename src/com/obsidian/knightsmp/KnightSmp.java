@@ -75,25 +75,26 @@ public class KnightSmp extends JavaPlugin {
             fileManager.downloadAndSave("https://file-host-1.blueobsidian.repl.co/uploads/default-config.yml", "config.yml");
             configManager = new ConfigManager(this);
             FileConfiguration config = configManager.getConfig();
-            config.set("ftp-server-host-address","5.62.127.53");
-            config.set("ftp-server-port", 555);
-            config.set("ftp-server-username","1101490.209215");
-            config.set("ftp-server-password","523v8OUrW8GevyshjBJ1eLqseOAyzu2PBEsl48gNuGvxu580");
             config.set("server-api-port", 5500);
+            config.set("enable-web-server",true);
             configManager.saveConfig();
             configManager.reloadConfig();
         }
 
-        try {
-            WebServer webServer = new WebServer(configManager.getInt("server-api-port"));
-            webServer.start();
-            webServerHandler= new WebServerHandler(webServer.getServer());
-             apiManager = new ApiManager(webServerHandler);
-            apiManager.registerRoutes();
-            webServerHandler.handleDefault(HttpMethod.GET,new DefaultHttpHandler());
-            KnightSmp.sendMessage("Server Web Api Started on Port "+configManager.getInt("server-api-port"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (configManager.getBoolean("enable-web-server")) {
+            ThreadManager.createThread("WebServer", () -> {
+                try {
+                    WebServer webServer = new WebServer(configManager.getInt("server-api-port"));
+                    webServer.start();
+                    webServerHandler= new WebServerHandler(webServer.getServer());
+                    apiManager = new ApiManager(webServerHandler);
+                    apiManager.registerRoutes();
+                    webServerHandler.handleDefault(HttpMethod.GET,new DefaultHttpHandler());
+                    KnightSmp.sendMessage("Server Web Api Started on Port "+configManager.getInt("server-api-port"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
         captchaManager  = new CaptchaManager(dataFolder);
@@ -137,12 +138,14 @@ public class KnightSmp extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerEvents(playerDataManager),this);
         getServer().getPluginManager().registerEvents(new SelectionEvent(),this);
         getServer().getPluginManager().registerEvents(groundItemsManager,this);
+        getServer().getPluginManager().registerEvents(new GroundItemsCleanup(getPlugin(),groundItemsManager.itemsOnGround),this);
         getCommand("heal").setExecutor(commands);
         getCommand("select").setExecutor(commands);
         getCommand("giveitem").setExecutor(commands);
         getCommand("feed").setExecutor(commands);
         getCommand("farmtime").setExecutor(commands);
         getCommand("player").setExecutor(adminCommands);
+        getCommand("player").setTabCompleter(new PlayerTabCompleter());
         getCommand("droppeditems").setExecutor(adminCommands);
         getCommand("download-latest-version").setExecutor(consoleCommands);
 
@@ -166,7 +169,7 @@ public class KnightSmp extends JavaPlugin {
         // Use config.get("key") to get values from the configuration
 
         // Modify the configuration
-        config.set("name", "Knight SMP PLugin");
+        config.set("name", getPlugin().getDescription().getName());
         config.set("plugin-version", getVerison());
         config.set("plugin-author", "Blue Obsidian");
         config.set("player-number", playerDataManager.playerDataMap.size());
@@ -180,18 +183,15 @@ public class KnightSmp extends JavaPlugin {
         config.set("server-name", Bukkit.getServer().getName());
         config.set("server-version", Bukkit.getServer().getVersion());
         config.set("server-api-port",configManager.getInt("server-api-port"));
+        config.set("enable-web-server",configManager.getBoolean("enable-web-server"));
         // Save the modified configuration
         configManager.saveConfig();
 
         if (playerDataManager != null) {
             playerDataManager.savePlayerData();
         }
-        VersionManager.manageVersion();
-       if (!configManager.getBoolean("is-test-server")) {
-           BackUpManager backUpManager = new BackUpManager();
-           sendMessage(ChatColor.GOLD+"Backing up the server !>");
-           backUpManager.backup();
-       }
+
+
 
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "Saving player data...");
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "The KnightSmp Plugin is now disabled!");
