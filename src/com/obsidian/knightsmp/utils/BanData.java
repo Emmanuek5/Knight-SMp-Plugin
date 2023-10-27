@@ -6,7 +6,7 @@ import java.util.UUID;
 public class BanData {
     private String username;
     private String reason;
-    private String expiry;
+    private Duration expiry;
     private boolean isPermanent;
     private UUID uuid;
 
@@ -36,11 +36,11 @@ public class BanData {
         this.reason = reason;
     }
 
-    public String getExpiry() {
+    public Duration getExpiry() {
         return expiry;
     }
 
-    public void setExpiry(String expiry) {
+    public void setExpiry(Duration expiry) {
         this.expiry = expiry;
     }
 
