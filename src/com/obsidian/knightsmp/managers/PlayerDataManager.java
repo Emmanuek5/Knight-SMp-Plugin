@@ -183,6 +183,32 @@ public class PlayerDataManager {
         return null; // Player not found
     }
 
+
+    public String getLastKnownLocation(Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            return playerData.getLastKnownLocation();
+        }
+        return null;
+    }
+
+    public void setLastKnownLocation(Player player, String location) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setLastKnownLocation(location);
+        }
+    }
+
+    public String getLastKnownLocation(UUID player) {
+        PlayerData playerData = playerDataMap.get(player);
+        if (playerData != null) {
+            return playerData.getLastKnownLocation();
+        }
+        return null;
+    }
+
+
+
     public Player getPlayerByUUID(UUID uuid) {
         Player onlinePlayer = Bukkit.getPlayer(uuid);
         if (onlinePlayer != null) {
@@ -392,6 +418,11 @@ public class PlayerDataManager {
                         playerData.setLastInventory(lastInventory);
                     }
 
+                    // Deserialize lastKnownLocation if available
+                    if (yamlData.containsKey("lastKnownLocation")) {
+                        String lastKnownLocation = (String) yamlData.get("lastKnownLocation");
+                        playerData.setLastKnownLocation(lastKnownLocation);
+                    }
                     // Deserialize inventory if available
                     if (yamlData.containsKey("inventory")) {
                         List<Map<String, Object>> inventoryList = (List<Map<String, Object>>) yamlData.get("inventory");
@@ -444,6 +475,7 @@ public class PlayerDataManager {
                 dataMap.put("Power", playerData.getPower());
                 dataMap.put("last-login-ip", playerData.getLastIp());
                 dataMap.put("Captcha", playerData.getCaptcha());
+                dataMap.put("lastKnownLocation", playerData.getLastKnownLocation());
 
                 if (playerData.getPower() != null && !playerData.getPower().isEmpty() && playerData.getPower() != "") {
 

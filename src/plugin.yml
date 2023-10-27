@@ -38,6 +38,9 @@ permissions:
       reset-captcha:
        description: Captcha
        default: op
+  ban-player:
+    description: Ban a player
+    default: op
   ddroppeditems:
     description: See the items that where dropped on the ground
     default: true
@@ -101,3 +104,10 @@ commands:
     aliases:
       - download-latest-version
       - dlv
+  ban-player:
+    description: Ban a player
+    usage: /<command> [player] [reason] [expiry] [isPermanent]
+    permission: knightsmp.ban-player
+    aliases:
+      - ban-player
+      - bp

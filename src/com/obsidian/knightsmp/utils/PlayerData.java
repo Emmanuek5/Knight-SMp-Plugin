@@ -8,6 +8,7 @@ import java.util.UUID;
 public class PlayerData implements Serializable {
 
     private ItemStack[] lastInventory;
+    private String lastKnownLocation;
     private ItemStack[] inventory;
     private UUID playerUUID;
     private String playerName;
@@ -42,8 +43,17 @@ public class PlayerData implements Serializable {
     public ItemStack[] getInventory() {
         return inventory;
     }
+
     public void setInventory(ItemStack[] inventory) {
         this.inventory = inventory;
+    }
+
+    public String getLastKnownLocation() {
+        return lastKnownLocation;
+    }
+
+    public void setLastKnownLocation(String lastKnownLocation) {
+        this.lastKnownLocation = lastKnownLocation;
     }
     public UUID getPlayerUUID() {
         return playerUUID;
@@ -52,6 +62,7 @@ public class PlayerData implements Serializable {
     public String getPlayerName() {
         return playerName;
     }
+
 
 
 

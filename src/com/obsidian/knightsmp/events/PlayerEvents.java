@@ -13,7 +13,9 @@ import com.obsidian.knightsmp.managers.ThreadManager;
 import com.obsidian.knightsmp.utils.PlayerData;
 import com.obsidian.knightsmp.managers.PlayerDataManager;
 import com.obsidian.knightsmp.utils.PowerSlotsScoreboard;
+import net.ess3.api.IEssentials.*;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +28,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
 
 import java.util.*;
 
@@ -45,6 +48,16 @@ public class PlayerEvents implements Listener {
 
     public PlayerEvents(PlayerDataManager playerDataManager) {
         this.playerDataManager = playerDataManager;
+    }
+
+
+
+    @EventHandler
+    public void omPlayerPreLoginEvent(AsyncPlayerPreLoginEvent event){
+        UUID id = event.getUniqueId();
+        OfflinePlayer OfflinePlayer = playerDataManager.getOfflinePlayer(event.getName());
+        if (OfflinePlayer.isBanned()){
+        }
     }
 
     @EventHandler
@@ -126,6 +139,8 @@ public class PlayerEvents implements Listener {
         // Use ThreadManager to run the task in another thread
         ThreadManager.createThread("PlayerMoveThread-" + player.getName(), () -> {
             if (playerDataManager.hasPlayerData(player)) {
+                String location = "x:" + player.getLocation().getBlockX() + " y:" + player.getLocation().getBlockY() + " z:" + player.getLocation().getBlockZ() + " world:" + player.getLocation().getWorld().getName();
+                playerDataManager.setLastKnownLocation(player, location);
                 playerDataManager.setPlayerInventory(player, player.getInventory().getContents());
             }
         });

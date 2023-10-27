@@ -5,6 +5,7 @@ import com.obsidian.knightsmp.managers.RouteHandler;
 import com.obsidian.knightsmp.server.HttpMethod;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.io.IOException;
@@ -34,43 +35,51 @@ public class PlayerHandler implements RouteHandler,HttpHandler {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
         if (pathParts.length >= 4) {
             String playerName = pathParts[3];
-            if (playerDataManager.getOfflinePlayer(playerName) == null && !playerDataManager.getOfflinePlayer(playerName).hasPlayedBefore()) {
-                sendResponse(exchange, "Player not found", 404); // Not Found
+            if (playerDataManager.getOfflinePlayer(playerName) == null) {
+                String response = "Player not found";
+                sendResponse(exchange,  response, 404); // Not Found
                 return;
             }
-            OfflinePlayer player = playerDataManager.getOfflinePlayer(playerName);
-            ArrayList<String> playerInfoList = new ArrayList<>();
-            playerInfoList.add("Name: " + player.getName());
-            playerInfoList.add("UUID: " + player.getUniqueId());
-            playerInfoList.add("First played: " + player.getFirstPlayed());
-            playerInfoList.add("Last Position: " + Objects.requireNonNull(player.getPlayer()).getLocation());
-            playerInfoList.add("Last played: " + player.getLastPlayed());
-            playerInfoList.add("online: " + player.isOnline());
-            playerInfoList.add("banned: " + player.isBanned());
-            playerInfoList.add("whitelisted: " + player.isWhitelisted());
-            playerInfoList.add("op: " + player.isOp());
-            playerInfoList.add("class: " + playerDataManager.getPlayerClass(player.getUniqueId()));
-            playerInfoList.add("inventory: " + Arrays.toString(playerDataManager.getPlayerInventory(player.getUniqueId())));
-            String[] powerSots = playerDataManager.getPowerSlots(player.getUniqueId());
-            for (int i = 0; i < powerSots.length; i++) {
-                playerInfoList.add("powerslot-" + i + ": " + powerSots[i]);
+            try {
+                OfflinePlayer player = playerDataManager.getOfflinePlayer(playerName);
+                ArrayList<String> playerInfoList = new ArrayList<>();
+                playerInfoList.add("Name: " + player.getName());
+                playerInfoList.add("UUID: " + player.getUniqueId());
+                playerInfoList.add("First played: " + player.getFirstPlayed());
+                playerInfoList.add("Last Position: " + playerDataManager.getLastKnownLocation(player.getUniqueId()));
+                playerInfoList.add("Last played: " + player.getLastPlayed());
+                playerInfoList.add("online: " + player.isOnline());
+                playerInfoList.add("banned: " + player.isBanned());
+                playerInfoList.add("whitelisted: " + player.isWhitelisted());
+                playerInfoList.add("op: " + player.isOp());
+                playerInfoList.add("class: " + playerDataManager.getPlayerClass(player.getUniqueId()));
+                playerInfoList.add("inventory: " + Arrays.toString(playerDataManager.getPlayerInventory(player.getUniqueId())));
+                String[] powerSots = playerDataManager.getPowerSlots(player.getUniqueId());
+                for (int i = 0; i < powerSots.length; i++) {
+                    playerInfoList.add("powerslot-" + i + ": " + powerSots[i]);
+                }
+                playerInfoList.add("lastInventory: " + Arrays.toString(playerDataManager.getPlayerLastInventory(player.getUniqueId())));
+                String response = String.join("\n", playerInfoList);
+                sendResponse(exchange, response, 200); // OK
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-           playerInfoList.add("lastInventory: " + Arrays.toString(playerDataManager.getPlayerLastInventory(player.getUniqueId())));
-          String response = String.join("\n", playerInfoList);
-
-
-
-            sendResponse(exchange, response, 200); // OK
         } else {
-            sendResponse(exchange, "Invalid request", 400); // Bad Request
+            String response = "Invalid request";
+            sendResponse(exchange, response, 400); // Bad Request
         }
     }
 
     private void sendResponse(HttpExchange exchange, String response, int statusCode) throws IOException {
-        exchange.sendResponseHeaders(statusCode, response.length());
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(response.getBytes());
+        try {
+            byte[] responseBytes = response.getBytes();
+            exchange.sendResponseHeaders(statusCode, responseBytes.length);
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(responseBytes);
+            }
         } catch (IOException e) {
+            // Log or handle the exception
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

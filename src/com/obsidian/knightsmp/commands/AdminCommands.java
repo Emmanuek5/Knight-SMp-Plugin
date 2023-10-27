@@ -1,5 +1,7 @@
 package com.obsidian.knightsmp.commands;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.obsidian.knightsmp.KnightSmp;
 import com.obsidian.knightsmp.PlayerSecurity.CaptchaManager;
 import com.obsidian.knightsmp.PlayerSecurity.LoginManager;
@@ -7,7 +9,10 @@ import com.obsidian.knightsmp.managers.GroundItemsManager;
 import com.obsidian.knightsmp.gui.DisplayGui;
 import com.obsidian.knightsmp.items.ItemManager;
 import com.obsidian.knightsmp.items.fragments.FragrentManager;
+import com.obsidian.knightsmp.managers.HttpRequest;
 import com.obsidian.knightsmp.managers.PlayerDataManager;
+import com.obsidian.knightsmp.utils.BanData;
+import me.ikevoodoo.lssmp.bstats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -20,10 +25,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
-import static com.obsidian.knightsmp.KnightSmp.captchaManager;
-import static com.obsidian.knightsmp.KnightSmp.essentials;
+import static com.obsidian.knightsmp.KnightSmp.*;
 
 public class AdminCommands implements CommandExecutor {
 PlayerDataManager playerDataManager;
@@ -147,10 +153,92 @@ PlayerDataManager playerDataManager;
             player.sendMessage(ChatColor.AQUA+"Opening GUI...");
             displayGui.open(player);
             return true;
+        }else if (cmd.getName().equalsIgnoreCase("ban-player")) {
+            if (args.length < 4) {
+                player.sendMessage(ChatColor.RED + "Usage: /ban-player <player> <reason> <expiry> <isPermanent>");
+                return true;
+            }
+
+            Player targetPlayer = Bukkit.getPlayer(args[0]);
+            String reason = args[1];
+            String expiry = args[2];
+            boolean isPermanent = Boolean.parseBoolean(args[3]);
+
+            if (targetPlayer != null) {
+                try {
+                    // Assuming you have a method to ban a player
+                    Duration time = parseDuration(expiry);
+                    targetPlayer.ban(reason, time, "Banned by " + player.getName());
+
+                    // Replace this URL with the actual endpoint for banning players
+                    String banApiUrl = configManager.getString("ban-api-route") + "/create";
+
+                    // Create a JSON object
+                    Gson gson = new Gson();
+                    String json = gson.toJson(new BanData(targetPlayer.getName(), reason, expiry, isPermanent, targetPlayer.getUniqueId()));
+
+                    // Send the POST request to the server with JSON data
+                    String response = HttpRequest.sendJsonPostRequest(banApiUrl, json);
+                    System.out.println(response);
+                    player.sendMessage(ChatColor.GREEN + "Player " + targetPlayer.getName() + " has been banned!");
+                } catch (NumberFormatException e) {
+                    player.sendMessage(ChatColor.RED + "Invalid time format. Please provide a valid duration in milliseconds.");
+                } catch (IOException e) {
+                    player.sendMessage(ChatColor.RED + "Error communicating with the ban API. Please try again later.");
+                    e.printStackTrace();
+                }
+            } else {
+                player.sendMessage(ChatColor.RED + "Player not found!");
+            }
+            return true;
         }
 
 
         return false;
+    }
+
+    public Duration parseDuration(String duration) {
+        //Try to parse the duration like 12h or 12d or 12wk or 1yyr etc
+        try {
+            long milliseconds = 0;
+            int index = 0;
+
+            while (index < duration.length()) {
+                StringBuilder numberBuilder = new StringBuilder();
+
+                while (index < duration.length() && Character.isDigit(duration.charAt(index))) {
+                    numberBuilder.append(duration.charAt(index));
+                    index++;
+                }
+
+                long number = Long.parseLong(numberBuilder.toString());
+
+                if (index < duration.length()) {
+                    char unit = duration.charAt(index);
+                    index++;
+
+                    switch (unit) {
+                        case 'h':
+                            milliseconds += number * 60 * 60 * 1000;
+                            break;
+                        case 'd':
+                            milliseconds += number * 24 * 60 * 60 * 1000;
+                            break;
+                        case 'w':
+                            milliseconds += number * 7 * 24 * 60 * 60 * 1000;
+                            break;
+                        case 'y':
+                            milliseconds += number * 365 * 24 * 60 * 60 * 1000;
+                            break;
+                    }
+                }
+            }
+
+            return Duration.ofMillis(milliseconds);
+        } catch (NumberFormatException e) {
+            // Handle invalid duration format
+            throw new IllegalArgumentException("Invalid duration format, The formats are 12h, 12d, 12wk, 1y etc");
+        }
     }
 
 }

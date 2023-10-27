@@ -77,11 +77,11 @@ public class KnightSmp extends JavaPlugin {
             FileConfiguration config = configManager.getConfig();
             config.set("server-api-port", 5500);
             config.set("enable-web-server",true);
+            config.set("ban-api-route","http://localhost/api/ban");
             configManager.saveConfig();
             configManager.reloadConfig();
         }
 
-        if (configManager.getBoolean("enable-web-server")) {
             ThreadManager.createThread("WebServer", () -> {
                 try {
                     WebServer webServer = new WebServer(configManager.getInt("server-api-port"));
@@ -95,7 +95,7 @@ public class KnightSmp extends JavaPlugin {
                     throw new RuntimeException(e);
                 }
             });
-        }
+
 
         captchaManager  = new CaptchaManager(dataFolder);
         configManager.reloadConfig();
@@ -148,6 +148,7 @@ public class KnightSmp extends JavaPlugin {
         getCommand("player").setTabCompleter(new PlayerTabCompleter());
         getCommand("droppeditems").setExecutor(adminCommands);
         getCommand("download-latest-version").setExecutor(consoleCommands);
+        getCommand("ban-player").setExecutor(adminCommands);
 
         getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "The KnightSmp Plugin is now enabled!");
 
@@ -184,6 +185,8 @@ public class KnightSmp extends JavaPlugin {
         config.set("server-version", Bukkit.getServer().getVersion());
         config.set("server-api-port",configManager.getInt("server-api-port"));
         config.set("enable-web-server",configManager.getBoolean("enable-web-server"));
+        config.set("web-server-port",configManager.getInt("web-server-port"));
+        config.set("ban-api-route",configManager.getString("ban-api-route"));
         // Save the modified configuration
         configManager.saveConfig();
 
