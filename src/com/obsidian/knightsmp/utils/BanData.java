@@ -1,5 +1,6 @@
 package com.obsidian.knightsmp.utils;
 
+import java.time.Duration;
 import java.util.UUID;
 
 public class BanData {
@@ -9,7 +10,7 @@ public class BanData {
     private boolean isPermanent;
     private UUID uuid;
 
-    public BanData(String username, String reason, String expiry, boolean isPermanent, UUID uuid) {
+    public BanData(String username, String reason, Duration expiry, boolean isPermanent, UUID uuid) {
         this.username = username;
         this.reason = reason;
         this.expiry = expiry;

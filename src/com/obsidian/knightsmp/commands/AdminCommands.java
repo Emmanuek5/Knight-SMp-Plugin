@@ -175,7 +175,7 @@ PlayerDataManager playerDataManager;
 
                     // Create a JSON object
                     Gson gson = new Gson();
-                    String json = gson.toJson(new BanData(targetPlayer.getName(), reason, expiry, isPermanent, targetPlayer.getUniqueId()));
+                    String json = gson.toJson(new BanData(targetPlayer.getName(), reason, parseDuration(expiry), isPermanent, targetPlayer.getUniqueId()));
 
                     // Send the POST request to the server with JSON data
                     String response = HttpRequest.sendJsonPostRequest(banApiUrl, json);
