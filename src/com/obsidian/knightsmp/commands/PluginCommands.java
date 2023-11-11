@@ -144,6 +144,20 @@ public class PluginCommands implements CommandExecutor {
                     player.getInventory().addItem(FragrentManager.flashPowerFragment);
                     player.sendMessage(ChatColor.AQUA + "You have received the FlashPower! Use it with caution!");
                 }
+            }else if (Objects.equals(item , "excalibur")){
+                if (args.length >= 2) {
+                    Player targetPlayer = Bukkit.getPlayer(args[1]);
+                    if (targetPlayer != null) {
+                        targetPlayer.getInventory().addItem(ItemManager.sword);
+                        player.sendMessage(ChatColor.AQUA + "You have given the Excalibur to " + targetPlayer.getName());
+                        targetPlayer.sendMessage(ChatColor.AQUA + "You have received the Excalibur! Use it with caution!");
+                    } else {
+                        player.sendMessage(ChatColor.RED + "Target player not found.");
+                    }
+                } else {
+                    player.getInventory().addItem(ItemManager.sword);
+                    player.sendMessage(ChatColor.AQUA + "You have received the Excalibur! Use it with caution!");
+                }
             }else {
                 player.sendMessage(ChatColor.RED + "Invalid item name.");
             }

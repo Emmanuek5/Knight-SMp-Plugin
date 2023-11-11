@@ -1,5 +1,6 @@
 package com.obsidian.knightsmp.items.fragments;
 
+import com.obsidian.knightsmp.KnightSmp;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -31,7 +32,7 @@ public class SledgeFragment extends FragrentManager{
         sr.setIngredient('E',Material.NETHER_STAR);
         sr.setIngredient('G',Material.GOLD_BLOCK);
         Bukkit.getServer().addRecipe(sr);
-
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
     }
 
     public static ShapedRecipe getRecipe(){

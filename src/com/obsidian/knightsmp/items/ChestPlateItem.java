@@ -53,6 +53,7 @@ public static ShapedRecipe sr;
         sr.setIngredient('A', Material.AMETHYST_SHARD);
         sr.setIngredient('N', Material.NETHERITE_CHESTPLATE);
         Bukkit.getServer().addRecipe(sr);
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
     }
 
     public static ShapedRecipe getRecipe(){

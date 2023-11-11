@@ -2,6 +2,7 @@ package com.obsidian.knightsmp.items;
 
 
 
+import com.obsidian.knightsmp.KnightSmp;
 import com.obsidian.knightsmp.items.fragments.FragrentManager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -17,6 +18,7 @@ public class ItemManager {
     public static ItemStack sword;
     public static ItemStack pickaxe;
     public static ItemStack book;
+
     public static void init() {
         FragrentManager.init();
         StaffItem.createStaff();
@@ -28,6 +30,7 @@ public class ItemManager {
         ExaliburItem.createExalibur();
         SledgeHammerItem.createSledgeHammer();
         BookItem.createBook();
+        KnightSmp.sendMessage("Registering items Complete! ");
     }
 
 

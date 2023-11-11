@@ -1,5 +1,6 @@
 package com.obsidian.knightsmp.items;
 
+import com.obsidian.knightsmp.KnightSmp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -54,6 +55,7 @@ public class BootItem extends ItemManager{
         sr.setIngredient('A', Material.AMETHYST_SHARD);
         sr.setIngredient('N', Material.NETHERITE_BOOTS);
         Bukkit.getServer().addRecipe(sr);
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
     }
 
     public static ShapedRecipe getRecipe(){

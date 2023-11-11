@@ -1,5 +1,6 @@
 package com.obsidian.knightsmp.items;
 
+import com.obsidian.knightsmp.KnightSmp;
 import com.obsidian.knightsmp.items.fragments.FragrentManager;
 import com.obsidian.knightsmp.items.fragments.SledgeFragment;
 import me.ikevoodoo.lssmp.menus.RecipeEditor;
@@ -42,6 +43,7 @@ public class SledgeHammerItem extends ItemManager{
         sr.setIngredient('P', Material.NETHERITE_PICKAXE);
         sr.setIngredient('G',Material.GOLD_INGOT);
         Bukkit.getServer().addRecipe(sr);
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
     }
     public static ShapedRecipe getRecipe(){
         return sr;

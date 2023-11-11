@@ -18,6 +18,10 @@ public class PlayerData implements Serializable {
     private String playerClass;
     private String lastIp;
     private String Captcha;
+    private int deaths;
+    private int kills;
+    private long playtime;
+    private boolean usePowers;
 
     public PlayerData(UUID playerUUID, String playerName, int playerScore, String power , String playerClass) {
         this.playerUUID = playerUUID;
@@ -33,6 +37,23 @@ public class PlayerData implements Serializable {
 
 
 
+    public void incrementPlaytime(long seconds) {
+        this.playtime += seconds;
+    }
+
+    public long getPlaytime() {
+        return this.playtime;
+    }
+    public void setPlaytime(long playtime) {
+        this.playtime = playtime;
+    }
+
+    public boolean isUsePowers() {
+        return usePowers;
+    }
+    public void setUsePowers(boolean usePowers) {
+        this.usePowers = usePowers;
+    }
     public ItemStack[] getLastInventory() {
         return lastInventory;
     }
@@ -61,6 +82,19 @@ public class PlayerData implements Serializable {
 
     public String getPlayerName() {
         return playerName;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
+    public int getDeaths() {
+        return deaths;
+    }
+    public void setDeaths(int deaths) {
+        this.deaths = deaths;
     }
 
 

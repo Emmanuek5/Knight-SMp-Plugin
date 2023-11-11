@@ -51,6 +51,29 @@ public class PlayerDataManager {
             playerData.setLastIp(lastIp);
         }
     }
+
+    public boolean canUsePowers(Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            return playerData.isUsePowers();
+        }
+        return false;
+    }
+
+    public  boolean canUsePowers(UUID player) {
+        PlayerData playerData = playerDataMap.get(player);
+        if (playerData != null) {
+            return playerData.isUsePowers();
+        }
+        return false;
+    }
+
+    public void setUsePowers(Player player, boolean usePowers) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setUsePowers(usePowers);
+        }
+    }
     public String getCaptcha(Player player) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
         if (playerData != null) {
@@ -85,6 +108,61 @@ public class PlayerDataManager {
         }
     }
 
+    public int getPlayerKills (Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            return playerData.getKills();
+        }
+        return 0;
+    }
+    public int getPlayerKills (UUID player) {
+        PlayerData playerData = playerDataMap.get(player);
+        if (playerData != null) {
+            return playerData.getKills();
+        }
+        return 0;
+    }
+
+    public void setPlayerKills (Player player, int kills) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setKills(kills);
+        }
+    }
+    public void addPlayerKill(Player player){
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setKills(playerData.getKills() + 1);
+        }
+    }
+
+    public int getPlayerDeaths (Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            return playerData.getDeaths();
+        }
+        return 0;
+    }
+    public int getPlayerDeaths (UUID player) {
+        PlayerData playerData = playerDataMap.get(player);
+        if (playerData != null) {
+            return playerData.getDeaths();
+        }
+        return 0;
+    }
+
+    public void setPlayerDeaths (Player player, int deaths) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setDeaths(deaths);
+        }
+    }
+    public void addPlayerDeath(Player player){
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData != null) {
+            playerData.setDeaths(playerData.getDeaths() + 1);
+        }
+    }
 
 
     public void setNextPowerSlot(Player player, String power) {
@@ -343,6 +421,28 @@ public class PlayerDataManager {
         }
     }
 
+    public void incrementPlaytime(Player player, long seconds) {
+        PlayerData playerData = getPlayerData(player);
+        if (playerData != null) {
+            playerData.incrementPlaytime(seconds);
+        }
+    }
+
+    public long getPlaytime(Player player) {
+        PlayerData playerData = getPlayerData(player);
+        if (playerData != null) {
+            return playerData.getPlaytime();
+        }
+        return 0;
+    }
+    public long getPlaytime(UUID player) {
+        PlayerData playerData = getPlayerData(player);
+        if (playerData != null) {
+            return playerData.getPlaytime();
+        }
+        return 0;
+    }
+
 
 
     public void setPowerSlots(Player player, String[] powerSlots) {
@@ -388,6 +488,29 @@ public class PlayerDataManager {
                         if (yamlData.get("Captcha") != null) {
                             String captcha = (String) yamlData.get("Captcha");
                             playerData.setCaptcha(captcha);
+                        }
+                    }
+                    if (yamlData.containsKey("playtime")) {
+                        if (yamlData.get("playtime") != null) {
+                            int playtimeInt = (int) yamlData.get("playtime");
+
+                            // Convert int to long
+
+                            playerData.setPlaytime((long) playtimeInt);
+                        }
+                    }
+
+
+                    if (yamlData.containsKey("kills")) {
+                        if (yamlData.get("kills") != null) {
+                            int kills = (int) yamlData.get("kills");
+                            playerData.setKills(kills);
+                        }
+                    }
+                    if (yamlData.containsKey("deaths")) {
+                        if (yamlData.get("deaths") != null) {
+                            int deaths = (int) yamlData.get("deaths");
+                            playerData.setDeaths(deaths);
                         }
                     }
                     // Deserialize lastIp if available
@@ -475,6 +598,9 @@ public class PlayerDataManager {
                 dataMap.put("Power", playerData.getPower());
                 dataMap.put("last-login-ip", playerData.getLastIp());
                 dataMap.put("Captcha", playerData.getCaptcha());
+                dataMap.put("kills", playerData.getKills());
+                dataMap.put("deaths", playerData.getDeaths());
+                dataMap.put("playtime", (int) playerData.getPlaytime());
                 dataMap.put("lastKnownLocation", playerData.getLastKnownLocation());
 
                 if (playerData.getPower() != null && !playerData.getPower().isEmpty() && playerData.getPower() != "") {

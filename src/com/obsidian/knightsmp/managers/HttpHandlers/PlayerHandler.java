@@ -46,6 +46,8 @@ public class PlayerHandler implements RouteHandler,HttpHandler {
                 playerInfoList.add("Name: " + player.getName());
                 playerInfoList.add("UUID: " + player.getUniqueId());
                 playerInfoList.add("First played: " + player.getFirstPlayed());
+                playerInfoList.add("Last played: " + player.getLastPlayed());
+                playerInfoList.add("Playtime: " + playerDataManager.getPlaytime(player.getUniqueId()));
                 playerInfoList.add("Last Position: " + playerDataManager.getLastKnownLocation(player.getUniqueId()));
                 playerInfoList.add("Last played: " + player.getLastPlayed());
                 playerInfoList.add("online: " + player.isOnline());

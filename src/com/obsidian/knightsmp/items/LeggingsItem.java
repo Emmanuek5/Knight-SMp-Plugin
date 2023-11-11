@@ -1,4 +1,5 @@
 package com.obsidian.knightsmp.items;
+import com.obsidian.knightsmp.KnightSmp;
 import me.ikevoodoo.lssmp.LSSMP;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,6 +47,7 @@ public static ShapedRecipe sr;
         sr.setIngredient('A', Material.AMETHYST_SHARD);
         sr.setIngredient('N', Material.NETHERITE_LEGGINGS);
         Bukkit.getServer().addRecipe(sr);
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
 
 
     }

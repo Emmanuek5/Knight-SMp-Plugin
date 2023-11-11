@@ -22,3 +22,4 @@ public class FragrentManager extends ItemManager {
     }
 
 }
+ 

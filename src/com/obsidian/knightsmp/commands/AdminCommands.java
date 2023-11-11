@@ -1,9 +1,7 @@
 package com.obsidian.knightsmp.commands;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.obsidian.knightsmp.KnightSmp;
-import com.obsidian.knightsmp.PlayerSecurity.CaptchaManager;
 import com.obsidian.knightsmp.PlayerSecurity.LoginManager;
 import com.obsidian.knightsmp.managers.GroundItemsManager;
 import com.obsidian.knightsmp.gui.DisplayGui;
@@ -12,7 +10,6 @@ import com.obsidian.knightsmp.items.fragments.FragrentManager;
 import com.obsidian.knightsmp.managers.HttpRequest;
 import com.obsidian.knightsmp.managers.PlayerDataManager;
 import com.obsidian.knightsmp.utils.BanData;
-import me.ikevoodoo.lssmp.bstats.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -160,6 +157,10 @@ PlayerDataManager playerDataManager;
             }
 
             Player targetPlayer = Bukkit.getPlayer(args[0]);
+            if (player == targetPlayer) {
+                player.sendMessage(ChatColor.RED + "You cannot ban yourself!");
+                return true;
+            }
             String reason = args[1];
             String expiry = args[2];
             boolean isPermanent = Boolean.parseBoolean(args[3]);
@@ -175,7 +176,7 @@ PlayerDataManager playerDataManager;
 
                     // Create a JSON object
                     Gson gson = new Gson();
-                    String json = gson.toJson(new BanData(targetPlayer.getName(), reason, parseDuration(expiry), isPermanent, targetPlayer.getUniqueId()));
+                    String json = gson.toJson(new BanData(targetPlayer.getName(), reason, parsetoMilliseconds(expiry), isPermanent, targetPlayer.getUniqueId()));
 
                     // Send the POST request to the server with JSON data
                     String response = HttpRequest.sendJsonPostRequest(banApiUrl, json);
@@ -241,4 +242,50 @@ PlayerDataManager playerDataManager;
         }
     }
 
+    public String parsetoMilliseconds(String duration) {
+        //Try to parse the duration like 12h or 12d or 12wk or 1yyr etc
+        try {
+            long milliseconds = 0;
+            int index = 0;
+
+            while (index < duration.length()) {
+                StringBuilder numberBuilder = new StringBuilder();
+
+                while (index < duration.length() && Character.isDigit(duration.charAt(index))) {
+                    numberBuilder.append(duration.charAt(index));
+                    index++;
+                }
+
+                long number = Long.parseLong(numberBuilder.toString());
+
+                if (index < duration.length()) {
+                    char unit = duration.charAt(index);
+                    index++;
+
+                    switch (unit) {
+                        case 'h':
+                            milliseconds += number * 60 * 60 * 1000;
+                            break;
+                        case 'd':
+                            milliseconds += number * 24 * 60 * 60 * 1000;
+                            break;
+                        case 'w':
+                            milliseconds += number * 7 * 24 * 60 * 60 * 1000;
+                            break;
+                        case 'y':
+                            milliseconds += number * 365 * 24 * 60 * 60 * 1000;
+                            break;
+                    }
+                }
+
+                return "" + milliseconds + "";
+
+            }
+        }
+        catch (NumberFormatException e) {
+            // Handle invalid duration format
+            throw new IllegalArgumentException("Invalid duration format, The formats are 12h, 12d, 12wk, 1y etc");
+        }
+        return "";
+    }
 }

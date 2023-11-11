@@ -58,7 +58,8 @@ public class FragmentEvents implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (event.getAction().toString().contains("LEFT_CLICK") && player.isSneaking()) {
+        //let it check if the player is breaking a block
+        if (event.getAction().toString().contains("LEFT_CLICK") && player.isSneaking() && !event.hasBlock() && playerDataManager.canUsePowers(player)) {
             PlayerData playerData = KnightSmp.playerDataManager.getPlayerData(player);
             if (playerData != null) {
                 String[] powerSlots = playerData.getPowerSlots();
@@ -70,7 +71,12 @@ public class FragmentEvents implements Listener {
                             return;
                         }
                         if (powerSlot.equalsIgnoreCase(ChatColor.BOLD + "" + ChatColor.BLUE + "Bulldozer")) {
-                            // Your "Bulldozer" logic here
+
+                            PotionEffect effect = new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 20, 1);
+                            PotionEffect effect2 = new PotionEffect(PotionEffectType.SPEED, 20 * 20, 1);
+                            player.addPotionEffect(effect);
+                            player.addPotionEffect(effect2);
+                            setCooldown(player, powerSlot);
                         } else if (powerSlot.equalsIgnoreCase(ChatColor.BOLD + "" + ChatColor.YELLOW + "Super Speed")) {
                             // Calculate the start location for lightning strikes in front of the player
 
@@ -78,7 +84,7 @@ public class FragmentEvents implements Listener {
                             Vector direction = playerLocation.getDirection().normalize();
                             Location startLocation = playerLocation.clone().add(direction.multiply(4)); // Adjust the multiplier as needed
                             ArmouredEntity armouredEntity = new ArmouredEntity();
-                            armouredEntity.spawnArmoredZombieWithTarget(startLocation, player, 1);
+                            armouredEntity.spawnArmoredZombieWithTarget(startLocation, player, 5);
                             setCooldown(player, powerSlot);
                             // Add more cases for other power slots as needed
                         }
@@ -98,7 +104,7 @@ public class FragmentEvents implements Listener {
                 if (!playerDataManager.hasPowerSlot(player, ChatColor.BOLD + "" + ChatColor.BLUE + "Bulldozer")) {
                     player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
                     player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 99999, 3));
-                    playerDataManager.setNextPowerSlot(player, ChatColor.BOLD + "" + ChatColor.BLUE + "Bulldozer");
+                    playerDataManager.setNextPowerSlot(player,   ChatColor.BOLD + "" + ChatColor.BLUE + "Bulldozer");
                     PlayerEvents.powerSlotsScoreboard.updatePowerSlotsScoreboard();
                     return;
                 } else {

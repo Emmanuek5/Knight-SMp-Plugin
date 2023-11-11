@@ -1,5 +1,6 @@
 package com.obsidian.knightsmp.items.fragments;
 
+import com.obsidian.knightsmp.KnightSmp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -33,6 +34,7 @@ public class FlashPowerFragment extends FragrentManager{
         sr.setIngredient('C',Material.COPPER_BLOCK);
         sr.setIngredient('B',Material.BLAZE_ROD);
         Bukkit.getServer().addRecipe(sr);
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
     }
 
 

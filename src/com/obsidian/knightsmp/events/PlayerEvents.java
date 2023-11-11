@@ -14,6 +14,7 @@ import com.obsidian.knightsmp.utils.PlayerData;
 import com.obsidian.knightsmp.managers.PlayerDataManager;
 import com.obsidian.knightsmp.utils.PowerSlotsScoreboard;
 import net.ess3.api.IEssentials.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Item;
@@ -28,6 +29,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 
 import java.util.*;
@@ -139,22 +141,42 @@ public class PlayerEvents implements Listener {
         // Use ThreadManager to run the task in another thread
         ThreadManager.createThread("PlayerMoveThread-" + player.getName(), () -> {
             if (playerDataManager.hasPlayerData(player)) {
+                // Increment playtime for each movement event (you can adjust the value based on your needs)
+
                 String location = "x:" + player.getLocation().getBlockX() + " y:" + player.getLocation().getBlockY() + " z:" + player.getLocation().getBlockZ() + " world:" + player.getLocation().getWorld().getName();
                 playerDataManager.setLastKnownLocation(player, location);
                 playerDataManager.setPlayerInventory(player, player.getInventory().getContents());
             }
         });
-
     }
 
+    public void startPlaytimeTracking() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Iterate through online players and increment playtime
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    if (playerDataManager.hasPlayerData(onlinePlayer)) {
+                        playerDataManager.incrementPlaytime(onlinePlayer, 1);
+                    }
+                }
+            }
+        }.runTaskTimer(KnightSmp.getPlugin(), 20L, 20L); // Run every 1 second (20 ticks = 1 second)
+    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         event.setKeepInventory(true);
         Player player = event.getEntity();
+        playerDataManager.setPlayerLastInventory(player, player.getInventory().getContents());
         ItemStack[] savedItems = new ItemStack[player.getInventory().getSize()];
         playerDataManager.setPlayerLastInventory(player, player.getInventory().getContents());
-
+        playerDataManager.addPlayerDeath(player);
+        //check if what killed the player was a player
+        if (event.getEntity().getKiller() != null) {
+            Player killer = event.getEntity().getKiller();
+            playerDataManager.addPlayerKill(killer);
+        }
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             ItemStack item = player.getInventory().getItem(i);
             if (item != null){
@@ -170,7 +192,7 @@ public class PlayerEvents implements Listener {
         event.setKeepInventory(false);
         player.dropItem(true);
         playerItemsMap.put(player.getName(), savedItems);
-        playerDataManager.setPlayerInventory(player, player.getInventory().getContents());
+
     }
 
 

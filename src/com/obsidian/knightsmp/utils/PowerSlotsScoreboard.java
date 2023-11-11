@@ -54,10 +54,14 @@ public class PowerSlotsScoreboard {
     public void initScoreboard() {
         // Initialize the basic scoreboard for a new player
         balance = essentials.getUser(player).getMoney().toString();
-        String playTime = String.valueOf(new Date( essentials.getUser(player).getLastOnlineActivity()).getTime());
-        KnightSmp.getPlugin().getLogger().info(playTime);
-        basicObjective.getScore(ChatColor.YELLOW +"Balance: " +ChatColor.DARK_GRAY+"$" + formatBalance(Double.parseDouble(balance))).setScore(0);
-        basicObjective.getScore(ChatColor.BLUE+ "Name: " + player.getName()).setScore(1);
+        new TimeUtils();
+        String playTime = TimeUtils.formatDuration(playerDataManager.getPlaytime(player));
+        basicObjective.getScore(ChatColor.BLUE+ "Name: " + player.getName()).setScore(5);
+        basicObjective.getScore(ChatColor.YELLOW +"Balance: " +ChatColor.DARK_PURPLE+"$" + formatBalance(Double.parseDouble(balance))).setScore(4);
+        basicObjective.getScore(ChatColor.GREEN+ "Kills: " + playerDataManager.getPlayerKills(player)).setScore(3);
+        basicObjective.getScore(ChatColor.RED+ "Deaths: " + playerDataManager.getPlayerDeaths(player)).setScore(2);
+        basicObjective.getScore(ChatColor.YELLOW+ "KDR: " + calculateKDR(player)).setScore(1);
+        basicObjective.getScore(ChatColor.BLUE+ "Play Time: " + playTime).setScore(0);
         player.setScoreboard(basicScoreboard);
     }
 
@@ -68,10 +72,17 @@ public class PowerSlotsScoreboard {
             basicScoreboard.resetScores(entry);
         }
         // Update basic scoreboard content
-        balance = essentials.getUser(player).getMoney().toString();
 
-        basicObjective.getScore(ChatColor.YELLOW +"Balance: " +ChatColor.DARK_PURPLE+"$" + formatBalance(Double.parseDouble(balance))).setScore(0);
-        basicObjective.getScore(ChatColor.BLUE+ "Name: " + player.getName()).setScore(1);
+        balance = essentials.getUser(player).getMoney().toString();
+        new TimeUtils();
+        String playTime = TimeUtils.formatDuration(playerDataManager.getPlaytime(player));
+        basicObjective.getScore(ChatColor.BLUE+ "Name: " + player.getName()).setScore(5);
+        basicObjective.getScore(ChatColor.YELLOW +"Balance: " +ChatColor.DARK_PURPLE+"$" + formatBalance(Double.parseDouble(balance))).setScore(4);
+
+        basicObjective.getScore(ChatColor.GREEN+ "Kills: " + playerDataManager.getPlayerKills(player)).setScore(3);
+        basicObjective.getScore(ChatColor.RED+ "Deaths: " + playerDataManager.getPlayerDeaths(player)).setScore(2);
+        basicObjective.getScore(ChatColor.YELLOW+ "KDR: " + calculateKDR(player)).setScore(1);
+        basicObjective.getScore(ChatColor.BLUE+ "Play Time: " + playTime).setScore(0);
         player.setScoreboard(basicScoreboard);
     }
 
@@ -88,6 +99,19 @@ public class PowerSlotsScoreboard {
             score.setScore(Math.min(9, powerSlots.length) - i);
         }
         player.setScoreboard(powerSlotsScoreboard);
+    }
+
+    public double calculateKDR(Player player) {
+        int kills = playerDataManager.getPlayerKills(player);
+        int deaths = playerDataManager.getPlayerDeaths(player);
+
+        // Check if deaths are zero to avoid division by zero
+        if (deaths != 0) {
+            return (double) kills / deaths;
+        } else {
+            // Return 0.0 when deaths are zero
+            return 0.0;
+        }
     }
 
 

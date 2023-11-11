@@ -8,10 +8,7 @@ import com.obsidian.knightsmp.commands.AdminCommands;
 import com.obsidian.knightsmp.commands.ConsoleCommands;
 import com.obsidian.knightsmp.commands.PlayerCommands;
 import com.obsidian.knightsmp.commands.PluginCommands;
-import com.obsidian.knightsmp.commands.TabCompleters.LoginTabCompleter;
-import com.obsidian.knightsmp.commands.TabCompleters.PlayerTabCompleter;
-import com.obsidian.knightsmp.commands.TabCompleters.RegisterTabCompleter;
-import com.obsidian.knightsmp.commands.TabCompleters.ResetPasswordTabCompleter;
+import com.obsidian.knightsmp.commands.TabCompleters.*;
 import com.obsidian.knightsmp.events.*;
 import com.obsidian.knightsmp.managers.*;
 import com.obsidian.knightsmp.items.*;
@@ -55,7 +52,6 @@ public class KnightSmp extends JavaPlugin {
     }
     @Override
     public void onEnable() {
-        ItemManager.init();
         File dataFolder = getDataFolder();
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
@@ -71,17 +67,17 @@ public class KnightSmp extends JavaPlugin {
                 FileConfiguration config = configManager.getConfig();
                 config.set("first-run",false);
             }
-        }else{
+        }else {
             fileManager.downloadAndSave("https://file-host-1.blueobsidian.repl.co/uploads/default-config.yml", "config.yml");
             configManager = new ConfigManager(this);
             FileConfiguration config = configManager.getConfig();
             config.set("server-api-port", 5500);
-            config.set("enable-web-server",true);
-            config.set("ban-api-route","http://localhost/api/ban");
+            config.set("enable-web-server", true);
+            config.set("ban-api-route", "http://localhost/api/ban");
             configManager.saveConfig();
             configManager.reloadConfig();
         }
-
+             ItemManager.init();
             ThreadManager.createThread("WebServer", () -> {
                 try {
                     WebServer webServer = new WebServer(configManager.getInt("server-api-port"));
@@ -126,19 +122,20 @@ public class KnightSmp extends JavaPlugin {
                 ChatColor.DARK_PURPLE + "t");
 
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "-------------------------");
-
+        GroundItemsCleanup groundItemsCleanup = new GroundItemsCleanup(getPlugin(),groundItemsManager.itemsOnGround);
         PluginCommands commands = new PluginCommands();
         AdminCommands adminCommands = new AdminCommands(playerDataManager);
         PlayerCommands playerCommands = new PlayerCommands();
         ConsoleCommands consoleCommands = new ConsoleCommands();
-
+        PlayerEvents pe = new PlayerEvents(playerDataManager);
+        pe.startPlaytimeTracking();
         getServer().getPluginManager().registerEvents(new PluginEvents(),this);
         getServer().getPluginManager().registerEvents(new FragmentEvents(),this);
         getServer().getPluginManager().registerEvents(new ItemEvents(),this);
-        getServer().getPluginManager().registerEvents(new PlayerEvents(playerDataManager),this);
+        getServer().getPluginManager().registerEvents(pe,this);
         getServer().getPluginManager().registerEvents(new SelectionEvent(),this);
         getServer().getPluginManager().registerEvents(groundItemsManager,this);
-        getServer().getPluginManager().registerEvents(new GroundItemsCleanup(getPlugin(),groundItemsManager.itemsOnGround),this);
+        getServer().getPluginManager().registerEvents(groundItemsCleanup,this);
         getCommand("heal").setExecutor(commands);
         getCommand("select").setExecutor(commands);
         getCommand("giveitem").setExecutor(commands);
@@ -147,15 +144,17 @@ public class KnightSmp extends JavaPlugin {
         getCommand("player").setExecutor(adminCommands);
         getCommand("player").setTabCompleter(new PlayerTabCompleter());
         getCommand("droppeditems").setExecutor(adminCommands);
-        getCommand("download-latest-version").setExecutor(consoleCommands);
         getCommand("ban-player").setExecutor(adminCommands);
+        getCommand("ban-player").setTabCompleter(new BanPlayerTabCompleter());
+        getCommand("turn-off-powers").setExecutor(playerCommands);
+        getCommand("turn-on-powers").setExecutor(playerCommands);
 
         getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "The KnightSmp Plugin is now enabled!");
 
     }
 
     public static void sendMessage(String message){
-        getPlugin().getServer().getConsoleSender().sendMessage(message);
+        getPlugin().getServer().getConsoleSender().sendMessage(ChatColor.GREEN +"[KnightSmp LOG] "+ChatColor.RESET + message);
     }
 
     @Override

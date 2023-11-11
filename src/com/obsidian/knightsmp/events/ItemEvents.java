@@ -166,8 +166,6 @@ public class ItemEvents implements Listener {
                     }
 
                     scheduleCooldownReset(player);
-                } else {
-                    player.sendMessage("You've reached the usage limit for this item.");
                 }
             }
         }
@@ -188,7 +186,7 @@ public class ItemEvents implements Listener {
               Bukkit.getServer().getConsoleSender().sendMessage(String.valueOf(FragrentManager.isFragment(requiredSlotItem)));
               // Check if the required item is your custom item with the same metadata
               if (FragrentManager.isFragment(requiredSlotItem)) {
-                  player.sendMessage("§2You have crafted a Sledge Fragment!");
+                  player.sendMessage("§2You have crafted a Sledge Hammer!");
                   AdvancementDisplay rootDisplay = new AdvancementDisplay(ItemManager.pickaxe, "Hidden Depths §c", AdvancementFrameType.TASK, true, true, 0, 0, "Craft The Sledge Hammer Item!");
 
                   return;

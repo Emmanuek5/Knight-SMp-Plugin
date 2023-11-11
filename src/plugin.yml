@@ -1,9 +1,9 @@
 name: Knight_Plugin
-version: 1.0.5
-description: A plugin for KnightsMP
+version: 1.0.6
+description: A plugin for Knight SMP
 main: com.obsidian.knightsmp.KnightSmp
 author: Blue Obsidian
-website: https://theknightsmp.carrd.co/
+website: https://knight-network.xyz/
 github: https://github.com/Emmanuek5/
 api-version: 1.19
 softdepend: [UltimateAdvancementAPI,Essentials]
@@ -41,6 +41,9 @@ permissions:
   ban-player:
     description: Ban a player
     default: op
+  powers:
+    description: Powers
+    default: true
   ddroppeditems:
     description: See the items that where dropped on the ground
     default: true
@@ -111,3 +114,18 @@ commands:
     aliases:
       - ban-player
       - bp
+      - ban
+  turn-off-powers:
+    description: Turn off powers
+    usage: /<command>
+    permission: knightsmp.powers
+    aliases:
+      - turn-off-powers
+      - tofp
+  turn-on-powers:
+    description: Turn on powers
+    usage: /<command>
+    permission: knightsmp.powers
+    aliases:
+      - turn-on-powers
+      - tofp

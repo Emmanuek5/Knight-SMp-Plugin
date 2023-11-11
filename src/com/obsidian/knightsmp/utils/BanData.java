@@ -6,11 +6,11 @@ import java.util.UUID;
 public class BanData {
     private String username;
     private String reason;
-    private Duration expiry;
+    private String expiry;
     private boolean isPermanent;
     private UUID uuid;
 
-    public BanData(String username, String reason, Duration expiry, boolean isPermanent, UUID uuid) {
+    public BanData(String username, String reason, String expiry, boolean isPermanent, UUID uuid) {
         this.username = username;
         this.reason = reason;
         this.expiry = expiry;
@@ -36,11 +36,11 @@ public class BanData {
         this.reason = reason;
     }
 
-    public Duration getExpiry() {
+    public String getExpiry() {
         return expiry;
     }
 
-    public void setExpiry(Duration expiry) {
+    public void setExpiry(String expiry) {
         this.expiry = expiry;
     }
 

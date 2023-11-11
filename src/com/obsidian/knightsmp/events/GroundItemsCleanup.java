@@ -30,7 +30,7 @@ public class GroundItemsCleanup implements Listener {
             public void run() {
                 ThreadManager.createThread("GroundItemsCleanup", () -> new CleanupTask());
             }
-        }.runTaskTimer(plugin, 5, 1000);
+        }.runTaskTimer(plugin,20L, 200L);
     }
 
     @EventHandler

@@ -42,6 +42,7 @@ public class WandItem extends ItemManager {
         sr.setIngredient('B', Material.BLAZE_POWDER);
         Bukkit.getServer().addRecipe(sr);
         KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
+
     }
 
 }

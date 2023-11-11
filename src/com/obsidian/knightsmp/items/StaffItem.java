@@ -1,5 +1,6 @@
 package com.obsidian.knightsmp.items;
 
+import com.obsidian.knightsmp.KnightSmp;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -41,6 +42,7 @@ public class StaffItem extends ItemManager{
         sr.setIngredient('S',Material.STICK);
         sr.setIngredient('G',Material.GOLDEN_APPLE);
         Bukkit.getServer().addRecipe(sr);
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
 
     }
 

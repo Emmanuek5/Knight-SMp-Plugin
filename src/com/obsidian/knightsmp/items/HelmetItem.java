@@ -1,4 +1,5 @@
 package com.obsidian.knightsmp.items;
+import com.obsidian.knightsmp.KnightSmp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -48,6 +49,7 @@ public class HelmetItem extends ItemManager {
         sr.setIngredient('S', Material.SOUL_LANTERN);
         sr.setIngredient('A', Material.AMETHYST_SHARD);
         Bukkit.getServer().addRecipe(sr);
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
 
     }
 

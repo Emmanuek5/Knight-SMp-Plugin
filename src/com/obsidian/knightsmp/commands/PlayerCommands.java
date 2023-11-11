@@ -20,75 +20,20 @@ public class PlayerCommands implements CommandExecutor {
             return true; // Return true to indicate that the command was handled
         }
 
-        if (cmd.getName().equalsIgnoreCase("register")) {
-            Player player = (Player) sender;
-            if (args.length < 1) {
-                sender.sendMessage("The usage is /register <password> <verify-password>");
-                return true;
-            }
-            String password = args[0];
-            String verifyPassword = args[1];
-            if (verifyPassword == null){
-                player.sendMessage(ChatColor.RED + "Usage: /register <password> <verify-password>");
-            }
-            if (!password.equals(verifyPassword)) {
-                player.sendMessage(ChatColor.RED + "Passwordsts do not match.");
-                return true;
-            }
-            if (captchaManager.hasCaptcha(player)) {
-                player.sendMessage(ChatColor.RED + "You have already registered.");
-                return true;
-            }
-            captchaManager.setPlayerCaptcha(player, password);
-            player.sendMessage(ChatColor.GREEN + "Registered successfully!");
+        Player player = (Player) sender;
+        String commandName = cmd.getName();
+
+        if (commandName.equalsIgnoreCase("turn-off-powers")) {
+            playerDataManager.setUsePowers(player, false);
+            player.sendMessage(ChatColor.GREEN + "Turned off powers!");
             return true;
         }
 
-        if (cmd.getName().equalsIgnoreCase("reset-password")){
-            if (args.length < 1) {
-                sender.sendMessage("The usage is /reset-password <old-password> <new-password>");
-                return true;
-            }
-            Player player = (Player) sender;
-            String password = args[0];
-            String newPassword = args[1];
-            if (!captchaManager.hasCaptcha(player)) {
-                player.sendMessage(ChatColor.RED + "Password is not set.");
-                return true;
-            }
-            if (!captchaManager.verifyCaptcha(player, password)) {
-                player.sendMessage(ChatColor.RED + "Password Incorrect.");
-                return true;
-            }
-            captchaManager.setPlayerCaptcha(player, newPassword);
-            player.sendMessage(ChatColor.GREEN + "Password reset successfully!");
+        if (commandName.equalsIgnoreCase("turn-on-powers")) {
+            playerDataManager.setUsePowers(player, true);
+            player.sendMessage(ChatColor.GREEN + "Turned on powers!");
             return true;
         }
-
-        if (cmd.getName().equalsIgnoreCase("login")) {
-            Player player = (Player) sender;
-            String password = args[0];
-            if (password == null){
-                player.sendMessage(ChatColor.RED + "Usage: /login <password>");
-            }
-            if (!captchaManager.hasCaptcha(player)) {
-                player.sendMessage(ChatColor.RED + "Password is not set.");
-                return true;
-            }
-            if (!captchaManager.verifyCaptcha(player, password)) {
-                player.sendMessage(ChatColor.RED + "Password Incorrect.");
-                return true;
-            }
-            captchaManager.setPlayerCaptcha(player, password);
-            LoginManager.setSuspiciousLogin(player.getName(), false);
-            playerDataManager.setLastIp(player, player.getAddress().getAddress().getHostAddress());
-            player.sendMessage(ChatColor.GREEN + "Logged in successfully!");
-            return true;
-
-
-            }
-
-
 
 
 

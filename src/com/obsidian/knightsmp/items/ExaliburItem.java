@@ -1,4 +1,6 @@
 package com.obsidian.knightsmp.items;
+import com.obsidian.knightsmp.KnightSmp;
+import me.ikevoodoo.smpcore.items.CustomItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,10 +34,10 @@ public class ExaliburItem extends ItemManager{
         meta.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 5, true);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 5, true);
         meta.addEnchant(Enchantment.SWEEPING_EDGE, 5, true);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.setUnbreakable(true);
         item.setItemMeta(meta);
         sword = item;
-
          sr = new ShapedRecipe(new NamespacedKey("knightsmp", "exalibur"),item);
         sr.shape("DDD","GNG","BSB");
         sr.setIngredient('D',Material.DIAMOND);
@@ -44,6 +46,7 @@ public class ExaliburItem extends ItemManager{
         sr.setIngredient('B', Material.BLAZE_POWDER);
         sr.setIngredient('N', Material.NETHERITE_SWORD);
         Bukkit.getServer().addRecipe(sr);
+        KnightSmp.sendMessage("Registered recipe: " + sr.getKey().toString());
     }
 
     public static ShapedRecipe getRecipe(){
